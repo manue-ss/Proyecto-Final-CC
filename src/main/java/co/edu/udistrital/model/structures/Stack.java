@@ -1,4 +1,4 @@
-package co.edu.udistrital.model.estructuras;
+package co.edu.udistrital.model.structures;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

@@ -1,6 +1,6 @@
-package co.edu.udistrital.model.entidades;
+package co.edu.udistrital.model.entities;
 import java.io.Serializable;
-import co.edu.udistrital.model.enumeraciones.EstadoTecnico;
+import co.edu.udistrital.model.enums.EstadoTecnico;
 
 public class Tecnico implements Serializable {
     

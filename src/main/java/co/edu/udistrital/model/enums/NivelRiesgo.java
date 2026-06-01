@@ -1,13 +1,13 @@
-package co.edu.udistrital.model.enumeraciones;
+package co.edu.udistrital.model.enums;
 
-public enum ImpactoMovilidad {
+public enum NivelRiesgo {
     BAJO(1),
     MEDIO(3),
     ALTO(5);
 
     private final int peso;
 
-    ImpactoMovilidad(int peso) {
+    NivelRiesgo(int peso) {
         this.peso = peso;
     }
 

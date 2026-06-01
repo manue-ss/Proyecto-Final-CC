@@ -1,7 +1,7 @@
-package co.edu.udistrital.model.entidades;
+package co.edu.udistrital.model.entities;
 import java.io.Serializable;
-import co.edu.udistrital.model.enumeraciones.TipoKit;
-import co.edu.udistrital.model.enumeraciones.EstadoKit;
+import co.edu.udistrital.model.enums.TipoKit;
+import co.edu.udistrital.model.enums.EstadoKit;
 
 public class Kit implements Serializable{
     

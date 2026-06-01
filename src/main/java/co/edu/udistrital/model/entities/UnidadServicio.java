@@ -1,7 +1,7 @@
-package co.edu.udistrital.model.entidades;
+package co.edu.udistrital.model.entities;
 
-import co.edu.udistrital.model.enumeraciones.TipoUnidad;
-import co.edu.udistrital.model.enumeraciones.EstadoUnidad;
+import co.edu.udistrital.model.enums.TipoUnidad;
+import co.edu.udistrital.model.enums.EstadoUnidad;
 import java.util.UUID;
 import java.io.Serializable;
 

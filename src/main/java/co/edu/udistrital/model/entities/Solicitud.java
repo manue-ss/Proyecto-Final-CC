@@ -1,10 +1,10 @@
-package co.edu.udistrital.model.entidades;
+package co.edu.udistrital.model.entities;
 
-import co.edu.udistrital.model.enumeraciones.TipoSolicitud;
-import co.edu.udistrital.model.enumeraciones.NivelCriticidad;
-import co.edu.udistrital.model.enumeraciones.EstadoSolicitud;
+import co.edu.udistrital.model.enums.TipoSolicitud;
+import co.edu.udistrital.model.enums.NivelCriticidad;
+import co.edu.udistrital.model.enums.EstadoSolicitud;
 import java.io.Serializable;
-import co.edu.udistrital.model.entidades.Cliente;
+import co.edu.udistrital.model.entities.Cliente;
 import java.util.UUID;
 
 public class Solicitud implements Comparable<Solicitud>, Serializable{

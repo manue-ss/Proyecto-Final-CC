@@ -1,4 +1,4 @@
-package co.edu.udistrital.model.enumeraciones;
+package co.edu.udistrital.model.enums;
 
 public enum NivelCriticidad {
     SIN_PRIORIDAD(0),
