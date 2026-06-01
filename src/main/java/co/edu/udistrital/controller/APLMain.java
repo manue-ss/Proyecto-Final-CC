@@ -9,12 +9,13 @@ import javafx.util.Callback;
  * Clase principal y Composition Root de la aplicación. Ensambla las
  * dependencias y arranca la interfaz gráfica.
  *
- * * @author Manuel Salazar
+ * @author Manuel Salazar
  */
 public class APLMain extends Application {
 
     public static void main(String[] args) {
         System.out.println("Arrancando sistema AutoRescate 24/7!");
+
         launch();
     }
 
