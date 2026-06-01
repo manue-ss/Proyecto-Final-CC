@@ -1,6 +1,6 @@
-package co.edu.udistrital.model;
+package co.edu.udistrital.model.entidades;
 
-import co.edu.udistrital.model.TipoCliente;
+import co.edu.udistrital.model.enumeraciones.TipoCliente;
 
 public class Cliente {
 

@@ -1,6 +1,6 @@
-package co.edu.udistrital.model;
+package co.edu.udistrital.model.entidades;
 
-import co.edu.udistrital.model.EstadoTecnico;
+import co.edu.udistrital.model.enumeraciones.EstadoTecnico;
 
 public class Tecnico {
 
@@ -37,7 +37,7 @@ public class Tecnico {
         return zona;
     }
 
-    public boolean isDisponivilidad() {
+    public boolean isDisponibilidad() {
         return disponibilidad;
     }
 
@@ -57,8 +57,8 @@ public class Tecnico {
         this.zona = zona;
     }
 
-    public void setDisponivilidad(boolean disponivilidad) {
-        this.disponibilidad = disponivilidad;
+    public void setDisponibilidad(boolean disponibilidad) {
+        this.disponibilidad = disponibilidad;
     }
 
 }

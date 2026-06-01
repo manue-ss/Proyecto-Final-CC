@@ -1,6 +1,7 @@
-package co.edu.udistrital.model;
+package co.edu.udistrital.model.enumeraciones;
 
 public enum NivelCriticidad {
+    SIN_PRIORIDAD(0),
     ORDINARIA(1),
     MEDIA(3),
     CRITICA(5);

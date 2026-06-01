@@ -1,16 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package co.edu.udistrital.model;
-import co.edu.udistrital.model.Cliente;
-import java.time.LocalDateTime;
+package co.edu.udistrital.model.entidades;
+
+import co.edu.udistrital.model.enumeraciones.TipoSolicitud;
+import co.edu.udistrital.model.enumeraciones.NivelCriticidad;
+import co.edu.udistrital.model.enumeraciones.EstadoSolicitud;
+import co.edu.udistrital.model.entidades.Cliente;
 import java.util.UUID;
-/**
- *
- * @author acurr
- */
+
 public class Solicitud {
+
     private int id;
     private int idCliente;
     private String uuid;
@@ -19,12 +16,11 @@ public class Solicitud {
     private TipoSolicitud tipo;
     private NivelCriticidad criticidad;
     private EstadoSolicitud estado;
-    private LocalDateTime fecha_hora;
 
     public Solicitud() {
     }
-    
-    public Solicitud(int id, int idCliente, int idTecnico, String descripcion, TipoSolicitud tipo, NivelCriticidad criticidad, EstadoSolicitud estado , LocalDateTime fecha_hora) {
+
+    public Solicitud(int id, int idCliente, int idTecnico, String descripcion, TipoSolicitud tipo, NivelCriticidad criticidad, EstadoSolicitud estado) {
         this.id = id;
         this.idCliente = idCliente;
         this.uuid = UUID.randomUUID().toString();
@@ -33,7 +29,6 @@ public class Solicitud {
         this.tipo = tipo;
         this.criticidad = criticidad;
         this.estado = estado;
-        this.fecha_hora = fecha_hora;
     }
 
     public int getId() {
@@ -68,10 +63,6 @@ public class Solicitud {
         return estado;
     }
 
-    public LocalDateTime getFecha_hora() {
-        return fecha_hora;
-    }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -104,9 +95,4 @@ public class Solicitud {
         this.estado = estado;
     }
 
-    public void setFecha_hora(LocalDateTime fecha_hora) {
-        this.fecha_hora = fecha_hora;
-    }
-    
-    
 }

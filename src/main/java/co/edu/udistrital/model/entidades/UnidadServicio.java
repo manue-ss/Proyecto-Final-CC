@@ -1,16 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package co.edu.udistrital.model;
+package co.edu.udistrital.model.entidades;
 
+import co.edu.udistrital.model.enumeraciones.TipoUnidad;
+import co.edu.udistrital.model.enumeraciones.EstadoUnidad;
 import java.util.UUID;
 
-/**
- *
- * @author acurr
- */
 public class UnidadServicio {
+
     private String uuid;
     private TipoUnidad tipo;
     private EstadoUnidad estado;
@@ -20,7 +15,7 @@ public class UnidadServicio {
     public UnidadServicio() {
     }
 
-    public UnidadServicio( TipoUnidad tipo, EstadoUnidad estado, String zona, boolean disponibilidad) {
+    public UnidadServicio(TipoUnidad tipo, EstadoUnidad estado, String zona, boolean disponibilidad) {
         this.uuid = UUID.randomUUID().toString();
         this.tipo = tipo;
         this.estado = estado;
@@ -67,6 +62,5 @@ public class UnidadServicio {
     public void setDisponibilidad(boolean disponibilidad) {
         this.disponibilidad = disponibilidad;
     }
-    
-    
+
 }

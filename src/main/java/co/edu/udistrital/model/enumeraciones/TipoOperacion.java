@@ -1,4 +1,4 @@
-package co.edu.udistrital.model;
+package co.edu.udistrital.model.enumeraciones;
 
 public enum TipoOperacion {
     ASIGNACION_UNIDAD,
