@@ -1,21 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package co.edu.udistrital.model;
-import co.edu.udistrital.model.EstadoRecurso;
-/**
- *
- * @author acurr
- */
+
+import co.edu.udistrital.model.EstadoTecnico;
+
 public class Tecnico {
+
     private int id;
     private String especialidad;
-    private EstadoRecurso estado;
+    private EstadoTecnico estado;
     private String zona;
     private boolean disponibilidad;
 
-    public Tecnico(int id, String especialidad, String estado, String zona, boolean disponibilidad) {
+    public Tecnico(int id, String especialidad, EstadoTecnico estado, String zona, boolean disponibilidad) {
         this.id = id;
         this.especialidad = especialidad;
         this.estado = estado;
@@ -31,7 +26,7 @@ public class Tecnico {
         return especialidad;
     }
 
-    public String getEstado() {
+    public EstadoTecnico getEstado() {
         return estado;
     }
 
@@ -51,7 +46,7 @@ public class Tecnico {
         this.especialidad = especialidad;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoTecnico estado) {
         this.estado = estado;
     }
 
@@ -62,7 +57,5 @@ public class Tecnico {
     public void setDisponivilidad(boolean disponivilidad) {
         this.disponibilidad = disponivilidad;
     }
-    
-     
-    
+
 }

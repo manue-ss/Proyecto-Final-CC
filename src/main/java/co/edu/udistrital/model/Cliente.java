@@ -1,14 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package co.edu.udistrital.model;
+
 import co.edu.udistrital.model.TipoCliente;
-/**
- *
- * @author acurr
- */
+
 public class Cliente {
+
     private int id;
     private String nombre;
     private TipoCliente tipo;
@@ -42,6 +37,5 @@ public class Cliente {
     public void setTipo(TipoCliente tipo) {
         this.tipo = tipo;
     }
-    
-   
+
 }
