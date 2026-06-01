@@ -3,7 +3,7 @@ package co.edu.udistrital.model.estructuras;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-
+import java.io.Serializable;
 /**
  * Implementación de una Lista Simplemente Enlazada genérica.
  *
@@ -11,8 +11,10 @@ import java.util.Objects;
  * @author Manuel Salazar
  * @since 0.1
  */
-public class SimpleLinkedList<T> implements Iterable<T> {
-
+public class SimpleLinkedList<T> implements Iterable<T>, Serializable {
+    
+    private static final long serialVersionUID = 1L;
+    
     private Node<T> tail;
     private Node<T> head;
     private int tamanio;

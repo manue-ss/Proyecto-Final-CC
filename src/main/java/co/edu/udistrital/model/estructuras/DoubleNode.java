@@ -3,14 +3,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package co.edu.udistrital.model.estructuras;
-
+import java.io.Serializable;
 /**
  *
  * @author Manuel Salazar
  * @since 0.1
  */
-public class DoubleNode<T> {
-
+public class DoubleNode<T> implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
+    
     private DoubleNode<T> siguiente;
     private DoubleNode<T> anterior;
     private T dato;

@@ -5,7 +5,7 @@ import co.edu.udistrital.model.enumeraciones.EstadoUnidad;
 import java.util.UUID;
 import java.io.Serializable;
 
-public class UnidadServicio {
+public class UnidadServicio implements Serializable {
     
     private static final long serialVersionUID = 1L;    
     

@@ -3,7 +3,7 @@ import java.io.Serializable;
 import co.edu.udistrital.model.enumeraciones.TipoKit;
 import co.edu.udistrital.model.enumeraciones.EstadoKit;
 
-public class Kit {
+public class Kit implements Serializable{
     
     private static final long serialVersionUID = 1L;
     
