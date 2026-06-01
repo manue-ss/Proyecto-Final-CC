@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package co.edu.udistrital.model;
-
+import co.edu.udistrital.model.EstadoRecurso;
 /**
  *
  * @author acurr
@@ -11,7 +11,7 @@ package co.edu.udistrital.model;
 public class Tecnico {
     private int id;
     private String especialidad;
-    private String estado;
+    private EstadoRecurso estado;
     private String zona;
     private boolean disponibilidad;
 
