@@ -2,7 +2,7 @@ package co.edu.udistrital.model.estructuras;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
+import java.io.Serializable;
 /**
  * Cola genérica con referencia al tope - {@link #top} - para reducir la
  * complejidad temporal.
@@ -10,8 +10,10 @@ import java.util.NoSuchElementException;
  * @author Manuel Salazar
  * @since 0.1
  */
-public class Stack<T> implements Iterable<T> {
-
+public class Stack<T> implements Iterable<T>, Serializable {
+    
+    private static final long serialVersionUID = 1L;
+    
     private Node<T> top;
     private int tamanio;
 

@@ -3,7 +3,7 @@ package co.edu.udistrital.model.estructuras;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-
+import java.io.Serializable;
 /**
  * Implementación de una Lista Doblemente Enlazada genérica.
  * <p>
@@ -17,8 +17,10 @@ import java.util.Objects;
  * @author Manuel Salazar
  * @since 0.1
  */
-public class DoubleLinkedList<T> implements Iterable<T> {
-
+public class DoubleLinkedList<T> implements Iterable<T>, Serializable {
+    
+    private static final long serialVersionUID = 1L;
+    
     private DoubleNode<T> tail;
     private DoubleNode<T> head;
     private int tamanio;

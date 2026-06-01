@@ -1,7 +1,7 @@
 package co.edu.udistrital.model.estructuras;
 
 import java.util.*;
-
+import java.io.Serializable;
 /**
  * Implementación de una Cola de Prioridad basada en un Árbol Max-Heap.
  * <p>
@@ -18,12 +18,14 @@ import java.util.*;
  * @author Manuel Salazar
  * @since 0.1
  */
-public class MaxHeapPriorityQueue<T extends Comparable<T>> implements Iterable<T> {
+public class MaxHeapPriorityQueue<T extends Comparable<T>> implements Iterable<T>, Serializable {
 
     /**
      * * Arreglo dinámico que almacena los elementos manteniendo la propiedad
      * Max-Heap.
      */
+    private static final long serialVersionUID = 1L;
+    
     private final List<T> heap;
     private final Comparator<T> comparador;
 
