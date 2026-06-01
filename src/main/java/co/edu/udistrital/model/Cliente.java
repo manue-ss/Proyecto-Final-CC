@@ -43,5 +43,5 @@ public class Cliente {
         this.tipo = tipo;
     }
     
-    
+   
 }
