@@ -10,6 +10,9 @@ public class Tecnico {
     private String zona;
     private boolean disponibilidad;
 
+    public Tecnico() {
+    }
+
     public Tecnico(int id, String especialidad, EstadoTecnico estado, String zona, boolean disponibilidad) {
         this.id = id;
         this.especialidad = especialidad;

@@ -8,6 +8,9 @@ public class Cliente {
     private String nombre;
     private TipoCliente tipo;
 
+    public Cliente() {
+    }
+
     public Cliente(int id, String nombre, TipoCliente tipo) {
         this.id = id;
         this.nombre = nombre;
