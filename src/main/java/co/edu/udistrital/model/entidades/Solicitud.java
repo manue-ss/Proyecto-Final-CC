@@ -6,7 +6,7 @@ import co.edu.udistrital.model.enumeraciones.EstadoSolicitud;
 import co.edu.udistrital.model.entidades.Cliente;
 import java.util.UUID;
 
-public class Solicitud {
+public class Solicitud implements Comparable<Solicitud>{
 
     private int id;
     private int idCliente;
@@ -93,6 +93,15 @@ public class Solicitud {
 
     public void setEstado(EstadoSolicitud estado) {
         this.estado = estado;
+    }
+    
+    @Override
+    public  int compareTo(Solicitud otraSolicitud){
+        int comparacionCriticidad = this.criticidad.compareTo(otraSolicitud.getCriticidad());
+        if (comparacionCriticidad == 0){
+            return Integer.compare(this.id, otraSolicitud.getId());
+        }
+        return comparacionCriticidad;
     }
 
 }
