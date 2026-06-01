@@ -23,7 +23,7 @@ USE `autorescate_bd`;
 CREATE TABLE IF NOT EXISTS `clientes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) NOT NULL,
-  `tipo` varchar(50) NOT NULL COMMENT 'particular, empresa de transporte, aseguradora',
+  `tipo` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
@@ -36,8 +36,8 @@ INSERT INTO `clientes` (`id`, `nombre`, `tipo`) VALUES
 -- Volcando estructura para tabla autorescate_bd.historialoperaciones
 CREATE TABLE IF NOT EXISTS `historialoperaciones` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `operacion` varchar(100) NOT NULL COMMENT 'asignación, cambio estado unidad, etc',
-  `entidad_afectada` varchar(50) NOT NULL COMMENT 'unidadesservicio, tecnicos, solicitudes',
+  `operacion` varchar(100) NOT NULL,
+  `entidad_afectada` varchar(50) NOT NULL,
   `id_afectado` varchar(36) NOT NULL,
   `estado_anterior` varchar(255) DEFAULT NULL,
   `estado_nuevo` varchar(255) DEFAULT NULL,
@@ -53,19 +53,18 @@ INSERT INTO `historialoperaciones` (`id`, `operacion`, `entidad_afectada`, `id_a
 -- Volcando estructura para tabla autorescate_bd.kits_repuestos
 CREATE TABLE IF NOT EXISTS `kits_repuestos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `codigo` varchar(50) NOT NULL,
-  `tipo` varchar(50) NOT NULL COMMENT 'kit de atención rápida o repuesto',
-  `estado` varchar(50) NOT NULL COMMENT 'en circulación, en revisión o listo',
+  `tipo` varchar(50) NOT NULL,
+  `estado` varchar(50) NOT NULL,
   `fecha_ingreso` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- Volcando datos para la tabla autorescate_bd.kits_repuestos: ~4 rows (aproximadamente)
-INSERT INTO `kits_repuestos` (`id`, `codigo`, `tipo`, `estado`, `fecha_ingreso`) VALUES
-	(1, 'KIT-001', 'kit de atención rápida', 'listo', '2026-06-01 02:14:30'),
-	(2, 'KIT-002', 'kit de atención rápida', 'en revisión', '2026-06-01 02:14:30'),
-	(3, 'REP-BATER-01', 'repuesto', 'en circulación', '2026-06-01 02:14:30'),
-	(4, 'REP-LLANTA-01', 'repuesto', 'listo', '2026-06-01 02:14:30');
+INSERT INTO `kits_repuestos` (`id`, `tipo`, `estado`, `fecha_ingreso`) VALUES
+	(1, 'kit de atención rápida', 'listo', '2026-06-01 02:14:30'),
+	(2, 'kit de atención rápida', 'en revisión', '2026-06-01 02:14:30'),
+	(3, 'repuesto', 'en circulación', '2026-06-01 02:14:30'),
+	(4, 'repuesto', 'listo', '2026-06-01 02:14:30');
 
 -- Volcando estructura para tabla autorescate_bd.solicitudes
 CREATE TABLE IF NOT EXISTS `solicitudes` (
@@ -74,9 +73,9 @@ CREATE TABLE IF NOT EXISTS `solicitudes` (
   `uuid_us` varchar(36) DEFAULT NULL,
   `tecnico_id` int(11) DEFAULT NULL,
   `descripcion` text NOT NULL,
-  `tipo` varchar(100) NOT NULL COMMENT 'vehículo varado, cambio de llanta, paso de corriente, envío de grúa, apertura de puertas, suministro de combustible o revisión mecánica básica en sitio.',
+  `tipo` varchar(100) NOT NULL,
   `criticidad` int(11) NOT NULL,
-  `estado` varchar(50) NOT NULL COMMENT 'pendiente, en ejecución o atendida',
+  `estado` varchar(50) NOT NULL,
   `fecha_hora` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`) USING BTREE,
   KEY `FK_solicitudes_clientes` (`cliente_id`),
@@ -112,10 +111,10 @@ INSERT INTO `tecnicos` (`id`, `especialidad`, `estado`, `zona`, `disponibilidad`
 -- Volcando estructura para tabla autorescate_bd.unidadesservicio
 CREATE TABLE IF NOT EXISTS `unidadesservicio` (
   `uuid` varchar(36) NOT NULL,
-  `tipo` varchar(50) NOT NULL COMMENT 'grúa, moto de apoyo, camioneta de asistencia o vehículo liviano',
-  `estado` varchar(50) NOT NULL COMMENT 'disponible, ocupada o en mantenimiento',
+  `tipo` varchar(50) NOT NULL,
+  `estado` varchar(50) NOT NULL,
   `zona` varchar(50) NOT NULL,
-  `disponibilidad` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1=Disponible, 0=Asignada',
+  `disponibilidad` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
