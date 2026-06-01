@@ -3,14 +3,17 @@ package co.edu.udistrital.model.entidades;
 import co.edu.udistrital.model.enumeraciones.TipoSolicitud;
 import co.edu.udistrital.model.enumeraciones.NivelCriticidad;
 import co.edu.udistrital.model.enumeraciones.EstadoSolicitud;
+import java.io.Serializable;
 import co.edu.udistrital.model.entidades.Cliente;
 import java.util.UUID;
 
-public class Solicitud implements Comparable<Solicitud>{
-
+public class Solicitud implements Comparable<Solicitud>, Serializable{
+    
+    private static final long serialVersionUID = 1L;
+    
     private int id;
     private int idCliente;
-    private String uuid;
+    private String uuidUs;
     private int idTecnico;
     private String descripcion;
     private TipoSolicitud tipo;
@@ -20,10 +23,10 @@ public class Solicitud implements Comparable<Solicitud>{
     public Solicitud() {
     }
 
-    public Solicitud(int id, int idCliente, int idTecnico, String descripcion, TipoSolicitud tipo, NivelCriticidad criticidad, EstadoSolicitud estado) {
+    public Solicitud(int id, int idCliente, String uuidUs, int idTecnico, String descripcion, TipoSolicitud tipo, NivelCriticidad criticidad, EstadoSolicitud estado) {
         this.id = id;
         this.idCliente = idCliente;
-        this.uuid = UUID.randomUUID().toString();
+        this.uuidUs = uuidUs;
         this.idTecnico = idTecnico;
         this.descripcion = descripcion;
         this.tipo = tipo;
@@ -40,7 +43,7 @@ public class Solicitud implements Comparable<Solicitud>{
     }
 
     public String getUuid() {
-        return uuid;
+        return uuidUs;
     }
 
     public int getIdTecnico() {
@@ -72,7 +75,7 @@ public class Solicitud implements Comparable<Solicitud>{
     }
 
     public void setUuid(String uuid) {
-        this.uuid = uuid;
+        this.uuidUs = uuid;
     }
 
     public void setIdTecnico(int idTecnico) {

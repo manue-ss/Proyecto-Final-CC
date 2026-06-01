@@ -3,9 +3,12 @@ package co.edu.udistrital.model.entidades;
 import co.edu.udistrital.model.enumeraciones.TipoUnidad;
 import co.edu.udistrital.model.enumeraciones.EstadoUnidad;
 import java.util.UUID;
+import java.io.Serializable;
 
 public class UnidadServicio {
-
+    
+    private static final long serialVersionUID = 1L;    
+    
     private String uuid;
     private TipoUnidad tipo;
     private EstadoUnidad estado;
@@ -43,8 +46,8 @@ public class UnidadServicio {
         return disponibilidad;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setUuid() {
+        this.uuid = UUID.randomUUID().toString();
     }
 
     public void setTipo(TipoUnidad tipo) {

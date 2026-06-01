@@ -1,9 +1,11 @@
 package co.edu.udistrital.model.entidades;
-
+import java.io.Serializable;
 import co.edu.udistrital.model.enumeraciones.EstadoTecnico;
 
-public class Tecnico {
-
+public class Tecnico implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
+    
     private int id;
     private String especialidad;
     private EstadoTecnico estado;
@@ -13,13 +15,6 @@ public class Tecnico {
     public Tecnico() {
     }
 
-    public Tecnico(int id, String especialidad, EstadoTecnico estado, String zona, boolean disponibilidad) {
-        this.id = id;
-        this.especialidad = especialidad;
-        this.estado = estado;
-        this.zona = zona;
-        this.disponibilidad = disponibilidad;
-    }
 
     public int getId() {
         return id;

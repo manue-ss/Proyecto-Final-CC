@@ -1,14 +1,16 @@
 package co.edu.udistrital.model.entidades;
-
+import java.io.Serializable;
 import co.edu.udistrital.model.enumeraciones.TipoCliente;
 
-public class Cliente {
-
+public class Cliente implements Serializable{
+    
+    private static final long serialVersionUID = 1L;
+    
     private int id;
     private String nombre;
     private TipoCliente tipo;
 
-    public Cliente() {
+    public Cliente () {
     }
 
     public Cliente(int id, String nombre, TipoCliente tipo) {

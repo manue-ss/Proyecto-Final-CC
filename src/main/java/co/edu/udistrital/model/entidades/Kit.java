@@ -1,10 +1,12 @@
 package co.edu.udistrital.model.entidades;
-
+import java.io.Serializable;
 import co.edu.udistrital.model.enumeraciones.TipoKit;
 import co.edu.udistrital.model.enumeraciones.EstadoKit;
 
 public class Kit {
-
+    
+    private static final long serialVersionUID = 1L;
+    
     private int id;
     private TipoKit tipo;
     private EstadoKit estado;
