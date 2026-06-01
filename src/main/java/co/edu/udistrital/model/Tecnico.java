@@ -13,14 +13,14 @@ public class Tecnico {
     private String especialidad;
     private String estado;
     private String zona;
-    private boolean disponivilidad;
+    private boolean disponibilidad;
 
-    public Tecnico(int id, String especialidad, String estado, String zona, boolean disponivilidad) {
+    public Tecnico(int id, String especialidad, String estado, String zona, boolean disponibilidad) {
         this.id = id;
         this.especialidad = especialidad;
         this.estado = estado;
         this.zona = zona;
-        this.disponivilidad = disponivilidad;
+        this.disponibilidad = disponibilidad;
     }
 
     public int getId() {
@@ -40,7 +40,7 @@ public class Tecnico {
     }
 
     public boolean isDisponivilidad() {
-        return disponivilidad;
+        return disponibilidad;
     }
 
     public void setId(int id) {
@@ -60,7 +60,7 @@ public class Tecnico {
     }
 
     public void setDisponivilidad(boolean disponivilidad) {
-        this.disponivilidad = disponivilidad;
+        this.disponibilidad = disponivilidad;
     }
     
      
