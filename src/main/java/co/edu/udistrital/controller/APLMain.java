@@ -1,65 +1,61 @@
 package co.edu.udistrital.controller;
 
-import co.edu.udistrital.model.util.DatabaseConnection;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+// Aquí importarás tu GestorArchivosBinarios, Repositorios y Casos de Uso cuando existan
 
 /**
+ * Clase principal y Composition Root de la aplicación. Ensambla las
+ * dependencias y arranca la interfaz gráfica.
  *
- * @author Manuel Salazar
+ * * @author Manuel Salazar
  */
 public class APLMain extends Application {
 
     public static void main(String[] args) {
-        System.out.println("Arrancando sistema!");
+        System.out.println("Arrancando sistema AutoRescate 24/7!");
         launch();
     }
 
     @Override
     public void start(Stage primaryStage) {
-        DatabaseConnection conexion = DatabaseConnection.getInstance();
 
-        /* Este es un ejemplo de la inyección de dependencias, donde al repositorio 
-        se el inyecta la conexion y a el caso de uso se le inyecta un repositorio*/
-        //RepositorioCasos repoCasos = new RepositorioCasosImpl(conexion);
-        //AtenderEmergenciaUseCase emergenciaUC = new AtenderEmergenciaUseCase(repoCasos);
-        // 2. Crear el Navegador (solo necesita el Stage)
+        // --- 1. INSTANCIAR MOTOR DE PERSISTENCIA ---
+        // GestorArchivosBinarios gestorBinario = new GestorArchivosBinarios();
+        // --- 2. ENSAMBLAR REPOSITORIOS Y CASOS DE USO ---
+        /* En lugar de una conexión SQL, los repositorios reciben el gestor binario 
+           (o instancian el suyo propio si lo haces estático) para cargar los archivos .dat */
+        // RepositorioCasos repoCasos = new RepositorioCasosImpl(gestorBinario);
+        // AtenderEmergenciaUseCase emergenciaUC = new AtenderEmergenciaUseCase(repoCasos);
+        // --- 3. CONFIGURAR NAVEGACIÓN ---
         Navigator navegador = new Navigator(primaryStage);
 
-        // 3. Crear el ControllerFactory. 
-        // ¡Gracias a la magia de las lambdas de Java, esta función "recuerda" 
-        // las variables que creamos arriba sin tener que meterlas en el Navegador!
+        // --- 4. FÁBRICA DE CONTROLADORES (INYECCIÓN A LA VISTA) ---
         Callback<Class<?>, Object> factory = clase -> {
             /*
-            Aca se presenta un ejemplo de como se usa en controller factory al 
-            momento de ejecutar el sistema, para evitar que javaFX cree un 
-            controlador sin casos de uso
-            
             if (clase == ControladorMenu.class) {
                 return new ControladorMenu(navegador);
             }
             if (clase == ControladorEmergencias.class) {
-                // Le inyectamos el caso de uso y el navegador para que pueda cambiar de vista luego
+                // Inyectamos la lógica de negocio puramente en memoria
                 return new ControladorEmergencias(navegador, emergenciaUC);
             }
-            // ... otros controladores ...
              */
-            return null;
-
+            return null; // Fallback mientras no haya controladores
         };
 
-        // 4. Conectar la fábrica al navegador y arrancar
         navegador.setControllerFactory(factory);
-        //navegador.navegar("/vistas/MenuPrincipal.fxml"); // Vista inicial
+
+        // ¡Usando tu nuevo Enum de rutas!
+        // navegador.navegar(Rutas.TEMPLATE.getPath()); 
     }
 
     @Override
     public void stop() throws Exception {
-        System.out.println("Apagando la aplicación... Liberando recursos.");
-
-        DatabaseConnection.getInstance().closeConnection();
-
+        // Al usar archivos binarios, no hay conexiones de red que mantener abiertas ni cerrar.
+        // Las escrituras se hacen instantáneamente en el disco durante la ejecución.
+        System.out.println("Apagando la aplicación... Cerrando hilos de JavaFX.");
         super.stop();
     }
 }
