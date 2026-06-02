@@ -47,6 +47,7 @@
                 <TableColumn fx:id="colEstado" prefWidth="120.0" text="Estado" />
                 <TableColumn fx:id="colTecnico" prefWidth="80.0" text="Técnico" />
                 <TableColumn fx:id="colUnidad" prefWidth="100.0" text="Unidad" />
+                <TableColumn fx:id="colKit" prefWidth="100.0" text="Kit Asignado" />
                 <TableColumn fx:id="colDescripcion" prefWidth="300.0" text="Descripción" />
             </columns>
         </TableView>

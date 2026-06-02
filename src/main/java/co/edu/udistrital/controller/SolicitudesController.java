@@ -31,6 +31,7 @@ public class SolicitudesController {
     @FXML private TableColumn<Solicitud, String> colEstado;
     @FXML private TableColumn<Solicitud, String> colTecnico;
     @FXML private TableColumn<Solicitud, String> colUnidad;
+    @FXML private TableColumn<Solicitud, String> colKit;
     @FXML private TableColumn<Solicitud, String> colDescripcion;
 
     @FXML private ComboBox<Integer> cmbTecnicosDisponibles;
@@ -60,6 +61,11 @@ public class SolicitudesController {
         colUnidad.setCellValueFactory(cellData -> {
             String uuid = cellData.getValue().getUuid();
             return new SimpleStringProperty(uuid == null || uuid.trim().isEmpty() ? "N/A" : uuid);
+        });
+        
+        colKit.setCellValueFactory(cellData -> {
+            int idKit = cellData.getValue().getIdKit();
+            return new SimpleStringProperty(idKit == 0 ? "No lleva" : "Kit #" + idKit);
         });
 
         actualizarDatosVisuales();

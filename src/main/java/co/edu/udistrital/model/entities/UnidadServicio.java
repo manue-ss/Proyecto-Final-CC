@@ -43,7 +43,8 @@ public class UnidadServicio implements Serializable {
     }
 
     public boolean isDisponibilidad() {
-        return disponibilidad;
+        this.disponibilidad = (this.estado == EstadoUnidad.DISPONIBLE);
+        return this.disponibilidad;
     }
 
     public void setUuid() {
@@ -56,6 +57,7 @@ public class UnidadServicio implements Serializable {
 
     public void setEstado(EstadoUnidad estado) {
         this.estado = estado;
+        this.disponibilidad = (this.estado == EstadoUnidad.DISPONIBLE);
     }
 
     public void setZona(String zona) {

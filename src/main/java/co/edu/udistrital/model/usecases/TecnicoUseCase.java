@@ -52,8 +52,10 @@ public class TecnicoUseCase {
 
     public void retornarTecnicoDeDescanso(int id) {
         Tecnico tecnico = dao.findById(id);
-        if (tecnico == null) {
-            throw new IllegalArgumentException("El técnico especificado no existe en el sistema.");
+        if (tecnico == null) throw new IllegalArgumentException("El técnico especificado no existe en el sistema.");
+
+        if (tecnico.getEstado() != EstadoTecnico.EN_DESCANSO) {
+            throw new IllegalStateException("El técnico no puede retornar de descanso porque su estado actual es: " + tecnico.getEstado());
         }
 
         tecnico.setEstado(EstadoTecnico.DISPONIBLE);
@@ -62,8 +64,10 @@ public class TecnicoUseCase {
 
     public void despedirTecnico(int id) {
         Tecnico tecnico = dao.findById(id);
-        if (tecnico == null) {
-            throw new IllegalArgumentException("El técnico especificado no existe en el sistema.");
+        if (tecnico == null) throw new IllegalArgumentException("El técnico especificado no existe en el sistema.");
+
+        if (tecnico.getEstado() == EstadoTecnico.ASIGNADO) {
+            throw new IllegalStateException("No se puede despedir al técnico porque actualmente está ASIGNADO a un servicio.");
         }
 
         tecnico.setEstado(EstadoTecnico.RETIRADO);

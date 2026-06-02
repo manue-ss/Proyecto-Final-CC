@@ -34,7 +34,6 @@ public class UnidadUseCase {
             }
 
             us.setEstado(EstadoUnidad.EN_MANTENIMIENTO);
-            us.setDisponibilidad(false);
             dao.update();
 
             String idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
@@ -50,8 +49,11 @@ public class UnidadUseCase {
             throw new IllegalArgumentException("Error: La unidad especificada no existe en el sistema.");
         }
 
+        if (us.getEstado() != EstadoUnidad.EN_MANTENIMIENTO) {
+            throw new IllegalStateException("La unidad no puede ser liberada porque su estado actual es: " + us.getEstado());
+        }
+
         us.setEstado(EstadoUnidad.DISPONIBLE);
-        us.setDisponibilidad(true);
         dao.update();
     }
 
@@ -60,9 +62,12 @@ public class UnidadUseCase {
         if (us == null) {
             throw new IllegalArgumentException("Error: La unidad especificada no existe en el sistema.");
         }
+        
+        if (us.getEstado() == EstadoUnidad.OCUPADA) {
+            throw new IllegalStateException("No se puede dar de baja la unidad porque actualmente está atendiendo una emergencia.");
+        }
 
         us.setEstado(EstadoUnidad.INACTIVA);
-        us.setDisponibilidad(false);
         dao.update();
     }
 
