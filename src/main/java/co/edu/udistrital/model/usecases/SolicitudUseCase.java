@@ -25,16 +25,18 @@ public class SolicitudUseCase {
         this.clienteDAO = clienteDAO;
     }
 
-    public Solicitud registrarSolicitud(int idCliente, String descripcion, TipoSolicitud tipo, NivelCriticidad criticidad) {
-        if (clienteDAO.findById(idCliente) == null) {
-            throw new IllegalArgumentException("El cliente especificado no se encuentra registrado en el sistema.");
+    public Solicitud registrarSolicitud(String identificadorCliente, String descripcion, TipoSolicitud tipo, NivelCriticidad criticidad) {
+        Cliente cliente = clienteDAO.findByIdentificador(identificadorCliente);
+
+        if (cliente == null) {
+            throw new IllegalArgumentException("El cliente con identificador " + identificadorCliente + " no se encuentra registrado.");
         }
 
         int nuevoId = solicitudDAO.getFullHistory().size() + 1;
 
         Solicitud nuevaSolicitud = new Solicitud(
                 nuevoId,
-                idCliente,
+                cliente.getId(),
                 null,
                 0,
                 descripcion,
@@ -47,8 +49,12 @@ public class SolicitudUseCase {
         return nuevaSolicitud;
     }
 
-    public void despacharServicio(int idSolicitud, int idTecnico, String uuidUnidad, boolean requiereKit) {
-        Solicitud solicitud = solicitudDAO.getById(idSolicitud);
+    public void despacharServicio(int idTecnico, String uuidUnidad, boolean requiereKit) {
+        Solicitud solicitud = solicitudDAO.pollNextIncident();
+        if (solicitud == null) {
+            throw new IllegalStateException("No hay solicitudes pendientes en la cola.");
+        }
+
         Tecnico tecnico = tecnicoDAO.findById(idTecnico);
         UnidadServicio unidad = unidadDAO.findByUuid(uuidUnidad);
 
@@ -73,7 +79,7 @@ public class SolicitudUseCase {
             }
         }
 
-        Integer idKit = (kitAsignado != null) ? kitAsignado.getId() : null;
+        int idKit = (kitAsignado != null) ? kitAsignado.getId() : 0;
 
         solicitud.setEstado(EstadoSolicitud.EN_EJECUCION);
         solicitud.setIdTecnico(tecnico.getId());
@@ -148,6 +154,10 @@ public class SolicitudUseCase {
             );
             operacionDAO.registerOperation(opMantenimiento);
         }
+    }
+
+    public Solicitud obtenerProximaSolicitud() {
+        return solicitudDAO.peekNextIncident();
     }
 
     public SimpleLinkedList<Solicitud> obtenerTodasLasSolicitudes() {

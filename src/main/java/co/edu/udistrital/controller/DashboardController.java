@@ -2,22 +2,22 @@ package co.edu.udistrital.controller;
 
 import co.edu.udistrital.model.enums.EstadoUnidad;
 import co.edu.udistrital.model.usecases.UnidadUseCase;
-import co.edu.udistrital.model.util.AsyncManager;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.Alert;
 
 public class DashboardController {
 
-    @FXML
-    private Label lblDisponibles;
-    @FXML
-    private Label lblOcupadas;
-    @FXML
-    private Label lblMantenimiento;
-    @FXML
-    private StackPane panelContenido;
+    @FXML private Label lblDisponibles;
+    @FXML private Label lblOcupadas;
+    @FXML private Label lblMantenimiento;
+    @FXML private StackPane panelContenido;
 
     private final UnidadUseCase unidadUseCase;
     private final Navigator navegador;
@@ -27,58 +27,73 @@ public class DashboardController {
         this.navegador = navegador;
     }
 
-    @FXML
-    public void initialize() {
+    @FXML public void initialize() {
+        co.edu.udistrital.controller.EventoGlobal.cambiarDatos = this::cargarIndicadoresAsync;
         cargarIndicadoresAsync();
         abrirSolicitudes();
     }
 
     private void cargarIndicadoresAsync() {
-        AsyncManager.ejecutarAsync(
-                () -> new int[]{
-                    unidadUseCase.obtenerUnidadesPorEstado(EstadoUnidad.DISPONIBLE).size(),
-                    unidadUseCase.obtenerUnidadesPorEstado(EstadoUnidad.OCUPADA).size(),
-                    unidadUseCase.obtenerUnidadesPorEstado(EstadoUnidad.EN_MANTENIMIENTO).size()
-                },
-                (resultados) -> {
-                    lblDisponibles.setText(String.valueOf(resultados[0]));
-                    lblOcupadas.setText(String.valueOf(resultados[1]));
-                    lblMantenimiento.setText(String.valueOf(resultados[2]));
-                }
-        );
+        int disponibles = unidadUseCase.obtenerUnidadesPorEstado(EstadoUnidad.DISPONIBLE).size();
+        int ocupadas = unidadUseCase.obtenerUnidadesPorEstado(EstadoUnidad.OCUPADA).size();
+        int mantenimiento = unidadUseCase.obtenerUnidadesPorEstado(EstadoUnidad.EN_MANTENIMIENTO).size();
+
+        lblDisponibles.setText(String.valueOf(disponibles));
+        lblOcupadas.setText(String.valueOf(ocupadas));
+        lblMantenimiento.setText(String.valueOf(mantenimiento));
     }
 
-    @FXML
-    private void abrirSolicitudes() {
+    @FXML private void abrirSolicitudes() {
         incrustarVista(Paths.MODULO_SOLICITUDES);
     }
 
-    @FXML
-    private void abrirUnidades() {
+    @FXML private void abrirUnidades() {
         incrustarVista(Paths.MODULO_UNIDADES);
     }
 
-    @FXML
-    private void abrirTecnicos() {
+    @FXML private void abrirTecnicos() {
         incrustarVista(Paths.MODULO_TECNICOS);
     }
 
-    @FXML
-    private void abrirKits() {
+    @FXML private void abrirKits() {
         incrustarVista(Paths.MODULO_KITS);
     }
 
-    @FXML
-    private void abrirClientes() {
+    @FXML private void abrirClientes() {
         incrustarVista(Paths.MODULO_CLIENTES);
     }
 
     @FXML
     private void abrirAdministracion() {
-        incrustarVista(Paths.MODULO_ADMINISTRACION);
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Acceso Restringido");
+        dialog.setHeaderText("Ingrese la contraseña:");
+
+        PasswordField pwd = new PasswordField();
+        VBox content = new VBox(pwd);
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK) {
+                return pwd.getText();
+            }
+            return null;
+        });
+
+        dialog.showAndWait().ifPresent(password -> {
+            if ("1234".equals(password)) {
+                incrustarVista(Paths.MODULO_ADMINISTRACION);
+            } else {
+                new Alert(Alert.AlertType.ERROR, "Contraseña incorrecta. Acceso denegado.").showAndWait();
+            }
+        });
     }
 
     private void incrustarVista(Paths ruta) {
+
+        cargarIndicadoresAsync();
+
         Parent nuevaVista = navegador.cargarVistaDinamica(ruta);
         if (nuevaVista != null) {
             panelContenido.getChildren().clear();

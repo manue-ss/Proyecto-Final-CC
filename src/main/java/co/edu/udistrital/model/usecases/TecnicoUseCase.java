@@ -19,7 +19,9 @@ public class TecnicoUseCase {
 
     public Tecnico registrarNuevoTecnico(String especialidad, String zona) {
         int nuevoId = 1;
-        while (dao.findById(nuevoId) != null) { nuevoId++; }
+        while (dao.findById(nuevoId) != null) {
+            nuevoId++;
+        }
 
         Tecnico nuevoTecnico = new Tecnico();
         nuevoTecnico.setId(nuevoId);
@@ -33,20 +35,26 @@ public class TecnicoUseCase {
 
     public void enviarTecnicoADescanso(int id) {
         Tecnico tecnico = dao.findById(id);
-        if (tecnico == null) throw new IllegalArgumentException("El técnico especificado no existe en el sistema.");
+        if (tecnico != null) {
+            if (tecnico.getEstado() != EstadoTecnico.DISPONIBLE) {
+                throw new IllegalStateException("El técnico no puede irse a descansar porque está " + tecnico.getEstado());
+            }
 
-        tecnico.setEstado(EstadoTecnico.EN_DESCANSO);
-        dao.update();
+            tecnico.setEstado(EstadoTecnico.EN_DESCANSO);
+            dao.update();
 
-        String idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
-        Operacion opMantenimiento = new Operacion(idOperacion, TipoOperacion.MANTENIMIENTO_RECURSO,
-                "Técnico enviado a descanso: " + id, null, id, null, null);
-        operacionDAO.registerOperation(opMantenimiento);
+            String idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
+            Operacion opMantenimiento = new Operacion(idOperacion, TipoOperacion.MANTENIMIENTO_RECURSO,
+                    "Técnico enviado a descanso: " + id, null, id, null, null);
+            operacionDAO.registerOperation(opMantenimiento);
+        }
     }
 
     public void retornarTecnicoDeDescanso(int id) {
         Tecnico tecnico = dao.findById(id);
-        if (tecnico == null) throw new IllegalArgumentException("El técnico especificado no existe en el sistema.");
+        if (tecnico == null) {
+            throw new IllegalArgumentException("El técnico especificado no existe en el sistema.");
+        }
 
         tecnico.setEstado(EstadoTecnico.DISPONIBLE);
         dao.update();
@@ -54,14 +62,15 @@ public class TecnicoUseCase {
 
     public void despedirTecnico(int id) {
         Tecnico tecnico = dao.findById(id);
-        if (tecnico == null) throw new IllegalArgumentException("El técnico especificado no existe en el sistema.");
+        if (tecnico == null) {
+            throw new IllegalArgumentException("El técnico especificado no existe en el sistema.");
+        }
 
         tecnico.setEstado(EstadoTecnico.RETIRADO);
         dao.update();
     }
 
-
     public Iterable<Tecnico> obtenerTodos() {
-        return dao.getAll(); 
+        return dao.getAll();
     }
 }

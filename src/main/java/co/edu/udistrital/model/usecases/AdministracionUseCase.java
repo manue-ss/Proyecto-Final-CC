@@ -128,16 +128,26 @@ public class AdministracionUseCase {
         if (op.getUuidUnidad() != null) {
             UnidadServicio unidad = unidadDAO.findByUuid(op.getUuidUnidad());
             if (unidad != null) {
-                unidad.setEstado(EstadoUnidad.DISPONIBLE);
-                unidadDAO.update();
-                return true;
+                if (unidad.getEstado() == EstadoUnidad.EN_MANTENIMIENTO) {
+                    unidad.setEstado(EstadoUnidad.DISPONIBLE);
+                    unidadDAO.update();
+                    return true;
+                } else {
+                    System.out.println("No se puede revertir el mantenimiento: la unidad actualmente está " + unidad.getEstado());
+                    return false;
+                }
             }
         } else if (op.getIdTecnico() != null) {
             Tecnico tecnico = tecnicoDAO.findById(op.getIdTecnico());
             if (tecnico != null) {
-                tecnico.setEstado(EstadoTecnico.DISPONIBLE);
-                tecnicoDAO.update();
-                return true;
+                if (tecnico.getEstado() == EstadoTecnico.EN_DESCANSO) {
+                    tecnico.setEstado(EstadoTecnico.DISPONIBLE);
+                    tecnicoDAO.update();
+                    return true;
+                } else {
+                    System.out.println("No se puede revertir el descanso: el técnico actualmente está " + tecnico.getEstado());
+                    return false;
+                }
             }
         } else if (op.getIdKit() != null) {
             Kit kit = kitDAO.getById(op.getIdKit());
@@ -149,13 +159,13 @@ public class AdministracionUseCase {
         return false;
     }
 
-    public void generarReporteDiarioCSV() {
+    public void generarReporteDiarioCSV(String rutaAbsoluta) {
         SimpleLinkedList<Solicitud> historialCompleto = solicitudDAO.getFullHistory();
 
         String fechaHoy = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String nombreArchivo = "Reporte_Diario_" + fechaHoy + ".csv";
 
-        try (FileWriter escritor = new FileWriter(nombreArchivo)) {
+        try (FileWriter escritor = new FileWriter(rutaAbsoluta)) {
 
             escritor.append("ID Solicitud,ID Cliente,Tipo de Caso,Criticidad,Estado,ID Tecnico Asignado,Unidad UUID,ID Kit Usado\n");
 
@@ -182,8 +192,7 @@ public class AdministracionUseCase {
 
             System.out.println("¡Reporte generado exitosamente! Se exportaron " + casosAtendidos + " casos al archivo: " + nombreArchivo);
 
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.err.println("Error crítico al intentar generar el archivo CSV: " + e.getMessage());
         }
     }

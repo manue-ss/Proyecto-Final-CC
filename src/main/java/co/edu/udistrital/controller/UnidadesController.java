@@ -18,44 +18,73 @@ public class UnidadesController {
     @FXML private TableView<UnidadServicio> tablaUnidades;
     @FXML private TableColumn<UnidadServicio, String> colUuid;
     @FXML private TableColumn<UnidadServicio, String> colTipo;
+    @FXML private TableColumn<UnidadServicio, String> colZona;
     @FXML private TableColumn<UnidadServicio, String> colEstado;
+    @FXML private TableColumn<UnidadServicio, String> colDisponibilidad;
 
-    public UnidadesController(UnidadUseCase useCase) { this.useCase = useCase; }
+    public UnidadesController(UnidadUseCase useCase) {
+        this.useCase = useCase;
+    }
 
     @FXML public void initialize() {
         cmbTipoUnidad.setItems(FXCollections.observableArrayList(TipoUnidad.values()));
         colUuid.setCellValueFactory(new PropertyValueFactory<>("uuid"));
         colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+        colZona.setCellValueFactory(new PropertyValueFactory<>("zona"));
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
-        cargarTabla(); 
+        colDisponibilidad.setCellValueFactory(cellData
+                -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().isDisponibilidad() ? "Sí" : "No")
+        );
+        cargarTabla();
     }
 
     @FXML private void registrarUnidad() {
-        if (txtZona.getText().isEmpty() || cmbTipoUnidad.getValue() == null) return;
+        if (txtZona.getText().isEmpty() || cmbTipoUnidad.getValue() == null) {
+            return;
+        }
         useCase.registrarNuevaUnidad(cmbTipoUnidad.getValue().name(), txtZona.getText());
-        txtZona.clear(); cmbTipoUnidad.setValue(null); 
+        txtZona.clear();
+        cmbTipoUnidad.setValue(null);
         cargarTabla();
+        EventoGlobal.notificarCambio();
     }
 
     @FXML private void enviarMantenimiento() {
         UnidadServicio u = tablaUnidades.getSelectionModel().getSelectedItem();
-        if (u != null) { useCase.enviarUnidadAMantenimiento(u.getUuid()); cargarTabla(); }
+        if (u != null) {
+            useCase.enviarUnidadAMantenimiento(u.getUuid());
+            cargarTabla();
+            EventoGlobal.notificarCambio();
+        }
     }
 
     @FXML private void liberarMantenimiento() {
         UnidadServicio u = tablaUnidades.getSelectionModel().getSelectedItem();
-        if (u != null) { useCase.liberarUnidadDeMantenimiento(u.getUuid()); cargarTabla(); }
+        if (u != null) {
+            useCase.liberarUnidadDeMantenimiento(u.getUuid());
+            cargarTabla();
+            EventoGlobal.notificarCambio();
+        }
     }
 
     @FXML private void darDeBaja() {
         UnidadServicio u = tablaUnidades.getSelectionModel().getSelectedItem();
-        if (u != null) { useCase.darDeBajaUnidad(u.getUuid()); cargarTabla(); }
+        if (u != null) {
+            useCase.darDeBajaUnidad(u.getUuid());
+            cargarTabla();
+            EventoGlobal.notificarCambio();
+        }
     }
 
     private void cargarTabla() {
         ObservableList<UnidadServicio> lista = FXCollections.observableArrayList();
-        Iterable<UnidadServicio> datos = useCase.obtenerTodas(); 
-        if (datos != null) { for (UnidadServicio u : datos) { lista.add(u); } }
+        Iterable<UnidadServicio> datos = useCase.obtenerTodas();
+        if (datos != null) {
+            for (UnidadServicio u : datos) {
+                lista.add(u);
+            }
+        }
         tablaUnidades.setItems(lista);
+        tablaUnidades.refresh();
     }
 }

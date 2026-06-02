@@ -23,7 +23,7 @@ public class TecnicosController {
     @FXML private TableColumn<Tecnico, String> colEspecialidad;
     @FXML private TableColumn<Tecnico, String> colZona;
     @FXML private TableColumn<Tecnico, String> colEstado;
-    @FXML private TableColumn<Tecnico, Boolean> colDisponibilidad;
+    @FXML private TableColumn<Tecnico, String> colDisponibilidad;
 
     public TecnicosController(TecnicoUseCase useCase) {
         this.useCase = useCase;
@@ -34,7 +34,10 @@ public class TecnicosController {
         colEspecialidad.setCellValueFactory(new PropertyValueFactory<>("especialidad"));
         colZona.setCellValueFactory(new PropertyValueFactory<>("zona"));
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
-        colDisponibilidad.setCellValueFactory(new PropertyValueFactory<>("disponibilidad"));
+        colDisponibilidad.setCellValueFactory(cellData -> {
+            boolean esDisponible = cellData.getValue().isDisponible();
+            return new javafx.beans.property.SimpleStringProperty(esDisponible ? "Sí" : "No");
+        });
         cargarTabla();
     }
 
@@ -49,6 +52,7 @@ public class TecnicosController {
         if (seleccionado != null) {
             useCase.enviarTecnicoADescanso(seleccionado.getId());
             cargarTabla();
+            EventoGlobal.notificarCambio();
         } else mostrarAlerta();
     }
 
@@ -57,6 +61,7 @@ public class TecnicosController {
         if (seleccionado != null) {
             useCase.retornarTecnicoDeDescanso(seleccionado.getId());
             cargarTabla();
+            EventoGlobal.notificarCambio();
         } else mostrarAlerta();
     }
 
@@ -65,6 +70,7 @@ public class TecnicosController {
         if (seleccionado != null) {
             useCase.despedirTecnico(seleccionado.getId());
             cargarTabla();
+            EventoGlobal.notificarCambio();
         } else mostrarAlerta();
     }
 
@@ -73,6 +79,7 @@ public class TecnicosController {
         Iterable<Tecnico> datos = useCase.obtenerTodos(); 
         if (datos != null) { for (Tecnico t : datos) { lista.add(t); } }
         tablaTecnicos.setItems(lista);
+        tablaTecnicos.refresh();
     }
 
     private void mostrarAlerta() {

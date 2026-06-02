@@ -84,6 +84,20 @@ public final class SolicitudDAO {
         return nextIncident;
     }
 
+    public Solicitud peekNextIncident() {
+        sortPendingRequests();
+        Solicitud nextIncident = null;
+
+        if (!criticalQueue.isEmpty()) {
+            nextIncident = criticalQueue.dequeue();
+        } else if (!ordinaryQueue.isEmpty()) {
+            nextIncident = ordinaryQueue.dequeue();
+        }
+
+        sortPendingRequests();
+        return nextIncident;
+    }
+
     public SimpleLinkedList<Solicitud> getFullHistory() {
         return this.fullHistory;
     }

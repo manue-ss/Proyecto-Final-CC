@@ -18,7 +18,7 @@
         <HBox spacing="10.0" alignment="CENTER_LEFT" style="-fx-background-color: #ecf0f1; -fx-padding: 15px; -fx-background-radius: 5px;">
             <children>
                 <VBox spacing="5.0">
-                    <Label text="ID Cliente (CC/NIT):" />
+                    <Label text="Cliente (CC/NIT):" />
                     <TextField fx:id="txtIdCliente" prefWidth="120.0" promptText="Num Cliente" />
                 </VBox>
                 <VBox spacing="5.0">

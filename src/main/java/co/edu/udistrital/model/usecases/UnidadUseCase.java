@@ -28,17 +28,20 @@ public class UnidadUseCase {
 
     public void enviarUnidadAMantenimiento(String uuid) {
         UnidadServicio us = dao.findByUuid(uuid);
-        if (us == null) {
-            throw new IllegalArgumentException("Error: La unidad especificada no existe en el sistema.");
+        if (us != null) {
+            if (us.getEstado() != EstadoUnidad.DISPONIBLE) {
+                throw new IllegalStateException("La unidad no se puede enviar a mantenimiento porque está " + us.getEstado());
+            }
+
+            us.setEstado(EstadoUnidad.EN_MANTENIMIENTO);
+            us.setDisponibilidad(false);
+            dao.update();
+
+            String idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
+            Operacion opMantenimiento = new Operacion(idOperacion, TipoOperacion.MANTENIMIENTO_RECURSO,
+                    "Unidad enviada a mantenimiento: " + uuid, null, null, uuid, null);
+            operacionDAO.registerOperation(opMantenimiento);
         }
-
-        us.setEstado(EstadoUnidad.EN_MANTENIMIENTO);
-        dao.update();
-
-        String idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
-        Operacion opMantenimiento = new Operacion(idOperacion, TipoOperacion.MANTENIMIENTO_RECURSO,
-                "Unidad enviada a mantenimiento: " + uuid, null, null, uuid, null);
-        operacionDAO.registerOperation(opMantenimiento);
     }
 
     public void liberarUnidadDeMantenimiento(String uuid) {
@@ -48,6 +51,7 @@ public class UnidadUseCase {
         }
 
         us.setEstado(EstadoUnidad.DISPONIBLE);
+        us.setDisponibilidad(true);
         dao.update();
     }
 
@@ -58,6 +62,7 @@ public class UnidadUseCase {
         }
 
         us.setEstado(EstadoUnidad.INACTIVA);
+        us.setDisponibilidad(false);
         dao.update();
     }
 

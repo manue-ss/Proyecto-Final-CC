@@ -19,47 +19,30 @@ public class SolicitudesController {
 
     private final SolicitudUseCase useCase;
 
-    @FXML
-    private TextField txtIdCliente;
-    @FXML
-    private ComboBox<TipoSolicitud> cmbTipo;
-    @FXML
-    private ComboBox<NivelCriticidad> cmbCriticidad;
-    @FXML
-    private TextField txtDescripcion;
+    @FXML private TextField txtIdCliente;
+    @FXML private ComboBox<TipoSolicitud> cmbTipo;
+    @FXML private ComboBox<NivelCriticidad> cmbCriticidad;
+    @FXML private TextField txtDescripcion;
 
-    @FXML
-    private TableView<Solicitud> tablaSolicitudes;
-    @FXML
-    private TableColumn<Solicitud, Integer> colId;
-    @FXML
-    private TableColumn<Solicitud, String> colTipo;
-    @FXML
-    private TableColumn<Solicitud, String> colCriticidad;
-    @FXML
-    private TableColumn<Solicitud, String> colEstado;
-    @FXML
-    private TableColumn<Solicitud, String> colTecnico;
-    @FXML
-    private TableColumn<Solicitud, String> colUnidad;
-    @FXML
-    private TableColumn<Solicitud, String> colDescripcion;
+    @FXML private TableView<Solicitud> tablaSolicitudes;
+    @FXML private TableColumn<Solicitud, Integer> colId;
+    @FXML private TableColumn<Solicitud, String> colTipo;
+    @FXML private TableColumn<Solicitud, String> colCriticidad;
+    @FXML private TableColumn<Solicitud, String> colEstado;
+    @FXML private TableColumn<Solicitud, String> colTecnico;
+    @FXML private TableColumn<Solicitud, String> colUnidad;
+    @FXML private TableColumn<Solicitud, String> colDescripcion;
 
-    @FXML
-    private ComboBox<Integer> cmbTecnicosDisponibles;
-    @FXML
-    private ComboBox<String> cmbUnidadesDisponibles;
-    @FXML
-    private CheckBox chkRequiereKit;
-    @FXML
-    private CheckBox chkKitDanado;
+    @FXML private ComboBox<Integer> cmbTecnicosDisponibles;
+    @FXML private ComboBox<String> cmbUnidadesDisponibles;
+    @FXML private CheckBox chkRequiereKit;
+    @FXML private CheckBox chkKitDanado;
 
     public SolicitudesController(SolicitudUseCase useCase) {
         this.useCase = useCase;
     }
 
-    @FXML
-    public void initialize() {
+    @FXML public void initialize() {
         cmbTipo.setItems(FXCollections.observableArrayList(TipoSolicitud.values()));
         cmbCriticidad.setItems(FXCollections.observableArrayList(NivelCriticidad.values()));
 
@@ -80,10 +63,20 @@ public class SolicitudesController {
         });
 
         actualizarDatosVisuales();
+        
+        tablaSolicitudes.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
+            if (newSel != null && newSel.getEstado() == co.edu.udistrital.model.enums.EstadoSolicitud.PENDIENTE) {
+                Solicitud prox = useCase.obtenerProximaSolicitud();
+                if (prox != null && newSel.getId() != prox.getId()) {
+                    javafx.application.Platform.runLater(() -> 
+                        tablaSolicitudes.getSelectionModel().select(prox)
+                    );
+                }
+            }
+        });
     }
 
-    @FXML
-    private void registrarSolicitud() {
+    @FXML private void registrarSolicitud() {
         if (txtIdCliente.getText().trim().isEmpty() || txtDescripcion.getText().trim().isEmpty()
                 || cmbTipo.getValue() == null || cmbCriticidad.getValue() == null) {
             mostrarAlerta(Alert.AlertType.WARNING, "Debe llenar todos los campos del formulario.");
@@ -91,7 +84,7 @@ public class SolicitudesController {
         }
 
         try {
-            int idCliente = Integer.parseInt(txtIdCliente.getText().trim());
+            String idCliente = txtIdCliente.getText().trim();
             useCase.registrarSolicitud(idCliente, txtDescripcion.getText().trim(), cmbTipo.getValue(), cmbCriticidad.getValue());
 
             txtIdCliente.clear();
@@ -99,48 +92,41 @@ public class SolicitudesController {
             cmbTipo.setValue(null);
             cmbCriticidad.setValue(null);
             actualizarDatosVisuales();
-        }
-        catch (NumberFormatException e) {
-            mostrarAlerta(Alert.AlertType.ERROR, "Error: El ID del cliente debe ser un número entero.");
+            EventoGlobal.notificarCambio();
         }
         catch (IllegalArgumentException e) {
             mostrarAlerta(Alert.AlertType.ERROR, e.getMessage());
         }
     }
 
-    @FXML
-    private void despacharSolicitud() {
-        Solicitud s = tablaSolicitudes.getSelectionModel().getSelectedItem();
+    @FXML private void despacharSolicitud() {
         Integer idTecnico = cmbTecnicosDisponibles.getValue();
         String uuidUnidad = cmbUnidadesDisponibles.getValue();
 
-        if (s == null) {
-            mostrarAlerta(Alert.AlertType.WARNING, "Seleccione una solicitud pendiente de la tabla.");
-            return;
-        }
         if (idTecnico == null || uuidUnidad == null) {
             mostrarAlerta(Alert.AlertType.WARNING, "Debe seleccionar un Técnico y una Unidad para despachar.");
             return;
         }
 
         try {
-            useCase.despacharServicio(s.getId(), idTecnico, uuidUnidad, chkRequiereKit.isSelected());
+            useCase.despacharServicio(idTecnico, uuidUnidad, chkRequiereKit.isSelected());
             chkRequiereKit.setSelected(false);
             actualizarDatosVisuales();
+            EventoGlobal.notificarCambio();
         }
         catch (Exception e) {
             mostrarAlerta(Alert.AlertType.ERROR, e.getMessage());
         }
     }
 
-    @FXML
-    private void finalizarSolicitud() {
+    @FXML private void finalizarSolicitud() {
         Solicitud s = tablaSolicitudes.getSelectionModel().getSelectedItem();
         if (s != null) {
             try {
                 useCase.finalizarSolicitudAtendida(s.getId(), chkKitDanado.isSelected());
                 chkKitDanado.setSelected(false);
                 actualizarDatosVisuales();
+                EventoGlobal.notificarCambio();
             }
             catch (Exception e) {
                 mostrarAlerta(Alert.AlertType.ERROR, e.getMessage());
@@ -177,6 +163,12 @@ public class SolicitudesController {
             }
         }
         cmbUnidadesDisponibles.setItems(listaUnidades);
+        tablaSolicitudes.refresh();
+        
+        Solicitud proxima = useCase.obtenerProximaSolicitud();
+        if (proxima != null) {
+            tablaSolicitudes.getSelectionModel().select(proxima);
+        }
     }
 
     private void mostrarAlerta(Alert.AlertType tipo, String msg) {

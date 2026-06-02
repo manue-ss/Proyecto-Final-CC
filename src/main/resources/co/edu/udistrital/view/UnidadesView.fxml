@@ -5,42 +5,48 @@
 <?import javafx.scene.text.Font?>
 
 <VBox prefHeight="600.0" prefWidth="900.0" spacing="20.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udistrital.controller.UnidadesController">
-   <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
-   <children>
-      <Label text="2. Flota y Unidades de Servicio" textFill="#2c3e50">
-         <font><Font name="System Bold" size="24.0" /></font>
-      </Label>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <children>
+        <Label text="2. Flota y Unidades de Servicio" textFill="#2c3e50">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+        </Label>
 
-      <HBox spacing="15.0" alignment="CENTER_LEFT" style="-fx-background-color: #ecf0f1; -fx-padding: 15px; -fx-background-radius: 5px;">
-         <children>
-            <VBox spacing="5.0">
-               <Label text="Zona de Operación:" />
-               <TextField fx:id="txtZona" prefWidth="200.0" />
-            </VBox>
-            <VBox spacing="5.0">
-               <Label text="Tipo de Unidad:" />
-               <ComboBox fx:id="cmbTipoUnidad" prefWidth="200.0" />
-            </VBox>
-            <VBox alignment="BOTTOM_LEFT">
-               <Button text="Registrar Unidad" onAction="#registrarUnidad" style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold;"/>
-            </VBox>
-         </children>
-      </HBox>
+        <HBox spacing="15.0" alignment="CENTER_LEFT" style="-fx-background-color: #ecf0f1; -fx-padding: 15px; -fx-background-radius: 5px;">
+            <children>
+                <VBox spacing="5.0">
+                    <Label text="Zona de Operación:" />
+                    <TextField fx:id="txtZona" prefWidth="200.0" />
+                </VBox>
+                <VBox spacing="5.0">
+                    <Label text="Tipo de Unidad:" />
+                    <ComboBox fx:id="cmbTipoUnidad" prefWidth="200.0" />
+                </VBox>
+                <VBox alignment="BOTTOM_LEFT">
+                    <Button text="Registrar Unidad" onAction="#registrarUnidad" style="-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                </VBox>
+            </children>
+        </HBox>
 
-      <TableView fx:id="tablaUnidades" prefHeight="400.0" prefWidth="860.0" VBox.vgrow="ALWAYS">
-        <columns>
-          <TableColumn fx:id="colUuid" prefWidth="250.0" text="UUID Asignado" />
-          <TableColumn fx:id="colTipo" prefWidth="200.0" text="Tipo de Unidad" />
-          <TableColumn fx:id="colEstado" prefWidth="200.0" text="Estado Actual" />
-        </columns>
-      </TableView>
+        <TableView fx:id="tablaUnidades" prefHeight="400.0" prefWidth="860.0" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colUuid" prefWidth="250.0" text="UUID Asignado" />
+                <TableColumn fx:id="colTipo" prefWidth="200.0" text="Tipo de Unidad" />
+                <TableColumn fx:id="colZona" prefWidth="200.0" text="Zona" />
+                <TableColumn fx:id="colEstado" prefWidth="200.0" text="Estado Actual" />
+                <TableColumn fx:id="colDisponibilidad" prefWidth="200.0" text="¿Disponible?" />
+            </columns>
+        </TableView>
 
-      <HBox spacing="10.0" alignment="CENTER_RIGHT">
-         <children>
-            <Button text="Enviar a Mantenimiento" onAction="#enviarMantenimiento" style="-fx-background-color: #f39c12; -fx-text-fill: white;"/>
-            <Button text="Liberar Mantenimiento" onAction="#liberarMantenimiento" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
-            <Button text="Dar de Baja Definitiva" onAction="#darDeBaja" style="-fx-background-color: #c0392b; -fx-text-fill: white;"/>
-         </children>
-      </HBox>
-   </children>
+        <HBox spacing="10.0" alignment="CENTER_RIGHT">
+            <children>
+                <Button text="Enviar a Mantenimiento" onAction="#enviarMantenimiento" style="-fx-background-color: #f39c12; -fx-text-fill: white;"/>
+                <Button text="Liberar Mantenimiento" onAction="#liberarMantenimiento" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+                <Button text="Dar de Baja Definitiva" onAction="#darDeBaja" style="-fx-background-color: #c0392b; -fx-text-fill: white;"/>
+            </children>
+        </HBox>
+    </children>
 </VBox>
