@@ -2,7 +2,6 @@ module co.edu.udistrital.auto.rescate {
     // 1. Dependencias externas (Lo que tu proyecto necesita)
     requires javafx.controls;
     requires javafx.fxml;
-    requires com.google.gson;
 
     // 2. Permisos para el Controlador
     // Exportamos el paquete controller para que JavaFX pueda arrancar APLMain
