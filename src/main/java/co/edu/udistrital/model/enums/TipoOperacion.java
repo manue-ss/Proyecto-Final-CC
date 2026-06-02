@@ -1,8 +1,7 @@
 package co.edu.udistrital.model.enums;
 
 public enum TipoOperacion {
-    ASIGNACION_UNIDAD,
-    CAMBIO_ESTADO_UNIDAD,
-    CAMBIO_ESTADO_SOLICITUD,
-    ASIGNACION_TECNICO
+    ASIGNACION_SERVICIO, 
+    CIERRE_SERVICIO,    
+    MANTENIMIENTO_RECURSO 
 }

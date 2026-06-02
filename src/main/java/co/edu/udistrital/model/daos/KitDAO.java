@@ -84,4 +84,13 @@ public final class KitDAO {
     private void saveAll() {
         binaryManager.guardarDatos(FILE_PATH, data);
     }
+
+    public Kit getById(int id) {
+        for (Kit kit : data.fullInventory) {
+            if (kit.getId() == id) {
+                return kit;
+            }
+        }
+        return null;
+    }
 }
