@@ -3,6 +3,7 @@ package co.edu.udistrital.model.usecases;
 import co.edu.udistrital.model.daos.ClienteDAO;
 import co.edu.udistrital.model.entities.Cliente;
 import co.edu.udistrital.model.enums.TipoCliente;
+import co.edu.udistrital.model.structures.SimpleLinkedList;
 
 public class ClienteUseCase {
 
@@ -18,17 +19,17 @@ public class ClienteUseCase {
         }
 
         int nuevoId = 1;
-        while (dao.findById(nuevoId) != null) { nuevoId++; }
+        while (dao.findById(nuevoId) != null) {
+            nuevoId++;
+        }
 
         Cliente nuevoCliente = new Cliente(nuevoId, nombre, identificador, tipo);
         dao.add(nuevoCliente);
         return nuevoCliente;
     }
 
-    // ==========================================
-    // MÉTODO AGREGADO PARA LA INTERFAZ GRÁFICA
-    // ==========================================
-    public Iterable<Cliente> obtenerTodos() {
+
+    public SimpleLinkedList<Cliente> obtenerTodos() {
         return dao.getAll();
     }
 }

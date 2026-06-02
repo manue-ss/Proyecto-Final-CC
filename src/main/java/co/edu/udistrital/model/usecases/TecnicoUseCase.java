@@ -60,9 +60,7 @@ public class TecnicoUseCase {
         dao.update();
     }
 
-    // ==========================================
-    // MÉTODO AGREGADO PARA LA INTERFAZ GRÁFICA
-    // ==========================================
+
     public Iterable<Tecnico> obtenerTodos() {
         return dao.getAll(); 
     }

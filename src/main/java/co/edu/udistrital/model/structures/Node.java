@@ -1,10 +1,6 @@
 package co.edu.udistrital.model.structures;
 import java.io.Serializable;
-/**
- *
- * @author Manuel Salazar
- * @since 0.1
- */
+
 class Node<T> implements Serializable {
     
     private static final long serialVersionUID = 1L;

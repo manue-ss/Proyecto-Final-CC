@@ -8,7 +8,7 @@ import co.edu.udistrital.model.util.InventarioKitsData;
 
 public final class KitDAO {
 
-    private static final String FILE_PATH = "kits.dat";
+    private static final String FILE_NAME = "kits.dat";
 
     private final GestorArchivosBinarios<InventarioKitsData> binaryManager;
 
@@ -17,7 +17,7 @@ public final class KitDAO {
     public KitDAO() {
         this.binaryManager = new GestorArchivosBinarios<>();
 
-        this.data = binaryManager.cargarDatos(FILE_PATH);
+        this.data = binaryManager.cargarDatos(FILE_NAME);
 
         if (this.data == null) {
             this.data = new InventarioKitsData();
@@ -82,7 +82,7 @@ public final class KitDAO {
     }
 
     private void saveAll() {
-        binaryManager.guardarDatos(FILE_PATH, data);
+        binaryManager.guardarDatos(FILE_NAME, data);
     }
 
     public Kit getById(int id) {

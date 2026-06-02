@@ -1,14 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package co.edu.udistrital.model.structures;
 import java.io.Serializable;
-/**
- *
- * @author Manuel Salazar
- * @since 0.1
- */
+
 public class DoubleNode<T> implements Serializable {
     
     private static final long serialVersionUID = 1L;

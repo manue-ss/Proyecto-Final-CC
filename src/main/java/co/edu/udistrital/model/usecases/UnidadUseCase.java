@@ -7,6 +7,7 @@ import co.edu.udistrital.model.entities.UnidadServicio;
 import co.edu.udistrital.model.enums.EstadoUnidad;
 import co.edu.udistrital.model.enums.TipoOperacion;
 import co.edu.udistrital.model.enums.TipoUnidad;
+import co.edu.udistrital.model.structures.DoubleLinkedList;
 
 public class UnidadUseCase {
 
@@ -27,7 +28,9 @@ public class UnidadUseCase {
 
     public void enviarUnidadAMantenimiento(String uuid) {
         UnidadServicio us = dao.findByUuid(uuid);
-        if (us == null) throw new IllegalArgumentException("Error: La unidad especificada no existe en el sistema.");
+        if (us == null) {
+            throw new IllegalArgumentException("Error: La unidad especificada no existe en el sistema.");
+        }
 
         us.setEstado(EstadoUnidad.EN_MANTENIMIENTO);
         dao.update();
@@ -40,7 +43,9 @@ public class UnidadUseCase {
 
     public void liberarUnidadDeMantenimiento(String uuid) {
         UnidadServicio us = dao.findByUuid(uuid);
-        if (us == null) throw new IllegalArgumentException("Error: La unidad especificada no existe en el sistema.");
+        if (us == null) {
+            throw new IllegalArgumentException("Error: La unidad especificada no existe en el sistema.");
+        }
 
         us.setEstado(EstadoUnidad.DISPONIBLE);
         dao.update();
@@ -48,16 +53,19 @@ public class UnidadUseCase {
 
     public void darDeBajaUnidad(String uuid) {
         UnidadServicio us = dao.findByUuid(uuid);
-        if (us == null) throw new IllegalArgumentException("Error: La unidad especificada no existe en el sistema.");
+        if (us == null) {
+            throw new IllegalArgumentException("Error: La unidad especificada no existe en el sistema.");
+        }
 
         us.setEstado(EstadoUnidad.INACTIVA);
         dao.update();
     }
 
-    // ==========================================
-    // MÉTODO AGREGADO PARA LA INTERFAZ GRÁFICA
-    // ==========================================
-    public Iterable<UnidadServicio> obtenerTodas() {
+    public DoubleLinkedList<UnidadServicio> obtenerUnidadesPorEstado(EstadoUnidad estado) {
+        return dao.getByState(estado);
+    }
+
+    public DoubleLinkedList<UnidadServicio> obtenerTodas() {
         return dao.getAll();
     }
 }

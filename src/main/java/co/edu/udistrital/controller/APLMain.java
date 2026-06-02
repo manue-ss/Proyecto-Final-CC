@@ -16,31 +16,26 @@ public class APLMain extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        // 1. Instanciar DAOs (Acceso a Datos)
         KitDAO kitDAO = new KitDAO();
         OperacionDAO operacionDAO = new OperacionDAO();
         SolicitudDAO solicitudDAO = new SolicitudDAO();
         TecnicoDAO tecnicoDAO = new TecnicoDAO();
         UnidadServicioDAO unidadServicioDAO = new UnidadServicioDAO();
-        ClienteDAO clienteDao = new ClienteDAO();
+        ClienteDAO clienteDAO = new ClienteDAO();
 
-        // 2. Instanciar Casos de Uso (Lógica de Negocio)
         AdministracionUseCase administracionUseCase = new AdministracionUseCase(solicitudDAO, tecnicoDAO, unidadServicioDAO, kitDAO, operacionDAO);
-        ClienteUseCase clienteUseCase = new ClienteUseCase(clienteDao);
+        ClienteUseCase clienteUseCase = new ClienteUseCase(clienteDAO);
         KitUseCase kitUseCase = new KitUseCase(kitDAO);
-        SolicitudUseCase solicitudUseCase = new SolicitudUseCase(solicitudDAO, tecnicoDAO, unidadServicioDAO, kitDAO, operacionDAO);
+        SolicitudUseCase solicitudUseCase = new SolicitudUseCase(solicitudDAO, tecnicoDAO, unidadServicioDAO, kitDAO, operacionDAO, clienteDAO);
         TecnicoUseCase tecnicoUseCase = new TecnicoUseCase(tecnicoDAO, operacionDAO);
         UnidadUseCase unidadUseCase = new UnidadUseCase(unidadServicioDAO, operacionDAO);
 
-        // 3. Instanciar el Navegador
         Navigator navegador = new Navigator(primaryStage);
 
-        // 4. Configurar la Inyección de Dependencias (Controller Factory)
-        // 4. Configurar la Inyección de Dependencias (Controller Factory)
         Callback<Class<?>, Object> factory = clase -> {
-            
+
             if (clase == DashboardController.class) {
-                return new DashboardController(unidadServicioDAO, navegador);
+                return new DashboardController(unidadUseCase, navegador);
             }
             if (clase == SolicitudesController.class) {
                 return new SolicitudesController(solicitudUseCase);
@@ -63,7 +58,8 @@ public class APLMain extends Application {
 
             try {
                 return clase.getDeclaredConstructor().newInstance();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 System.err.println("No se pudo instanciar el controlador: " + clase.getName());
                 return null;
             }
@@ -71,9 +67,8 @@ public class APLMain extends Application {
 
         navegador.setControllerFactory(factory);
 
-        // 5. Arrancar la aplicación cargando el Dashboard
         primaryStage.setTitle("Central Operativa - AutoRescate");
-        navegador.navegar(Paths.DASHBOARD); 
+        navegador.navegar(Paths.DASHBOARD);
     }
 
     @Override

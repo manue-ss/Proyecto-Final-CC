@@ -6,9 +6,9 @@ import java.util.UUID;
 import java.io.Serializable;
 
 public class UnidadServicio implements Serializable {
-    
-    private static final long serialVersionUID = 1L;    
-    
+
+    private static final long serialVersionUID = 1L;
+
     private String uuid;
     private TipoUnidad tipo;
     private EstadoUnidad estado;

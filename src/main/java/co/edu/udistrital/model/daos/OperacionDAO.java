@@ -6,14 +6,14 @@ import co.edu.udistrital.model.util.GestorArchivosBinarios;
 
 public final class OperacionDAO {
 
-    private static final String FILE_PATH = "historial_operaciones.dat";
+    private static final String FILE_NAME = "historial_operaciones.dat";
     private final GestorArchivosBinarios<Stack<Operacion>> binaryManager;
 
     private Stack<Operacion> historyStack;
 
     public OperacionDAO() {
         this.binaryManager = new GestorArchivosBinarios<>();
-        this.historyStack = binaryManager.cargarDatos(FILE_PATH);
+        this.historyStack = binaryManager.cargarDatos(FILE_NAME);
 
         if (this.historyStack == null) {
             this.historyStack = new Stack<>();
@@ -38,6 +38,6 @@ public final class OperacionDAO {
     }
 
     private void saveAll() {
-        binaryManager.guardarDatos(FILE_PATH, historyStack);
+        binaryManager.guardarDatos(FILE_NAME, historyStack);
     }
 }

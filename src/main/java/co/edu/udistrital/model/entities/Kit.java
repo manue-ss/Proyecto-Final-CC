@@ -1,12 +1,13 @@
 package co.edu.udistrital.model.entities;
+
 import java.io.Serializable;
 import co.edu.udistrital.model.enums.TipoKit;
 import co.edu.udistrital.model.enums.EstadoKit;
 
-public class Kit implements Serializable{
-    
+public class Kit implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    
+
     private int id;
     private TipoKit tipo;
     private EstadoKit estado;

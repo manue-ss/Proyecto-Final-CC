@@ -5,10 +5,10 @@ import co.edu.udistrital.model.enums.NivelCriticidad;
 import co.edu.udistrital.model.enums.EstadoSolicitud;
 import java.io.Serializable;
 
-public class Solicitud implements Comparable<Solicitud>, Serializable{
-    
+public class Solicitud implements Comparable<Solicitud>, Serializable {
+
     private static final long serialVersionUID = 1L;
-    
+
     private int id;
     private int idCliente;
     private String uuidUs;
@@ -104,12 +104,11 @@ public class Solicitud implements Comparable<Solicitud>, Serializable{
     public void setIdKit(int idKit) {
         this.idKit = idKit;
     }
-    
-    
+
     @Override
-    public  int compareTo(Solicitud otraSolicitud){
+    public int compareTo(Solicitud otraSolicitud) {
         int comparacionCriticidad = this.criticidad.compareTo(otraSolicitud.getCriticidad());
-        if (comparacionCriticidad == 0){
+        if (comparacionCriticidad == 0) {
             return Integer.compare(this.id, otraSolicitud.getId());
         }
         return comparacionCriticidad;

@@ -11,8 +11,8 @@ public enum Paths {
     MODULO_ADMINISTRACION("AdministracionView.fxml");
 
     private final String RUTA;
-    // CORRECCIÓN: Apuntamos directamente a la carpeta "fxml" que tienes en "resources"
-    private static final String BASE_PATH = "/fxml/"; 
+
+    private static final String BASE_PATH = "/co/edu/udistrital/view/"; 
 
     Paths(String RUTA) {
         this.RUTA = RUTA;

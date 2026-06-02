@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="600.0" prefWidth="900.0" spacing="15.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udistrital.controller.KitsController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <children>
+        <Label text="4. Inventario de Kits y Repuestos" textFill="#2c3e50">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+        </Label>
+
+        <HBox spacing="15.0" alignment="CENTER_LEFT" style="-fx-background-color: #ecf0f1; -fx-padding: 15px; -fx-background-radius: 5px;">
+            <children>
+                <VBox spacing="5.0">
+                    <Label text="Categoría del Kit:" />
+                    <ComboBox fx:id="cmbTipoKit" prefWidth="200.0" />
+                </VBox>
+                <VBox alignment="BOTTOM_LEFT">
+                    <Button text="Ingresar Kit al Inventario" onAction="#registrarKit" style="-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                </VBox>
+            </children>
+        </HBox>
+
+        <HBox spacing="20.0" VBox.vgrow="ALWAYS">
+            <children>
+                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                    <Label text="Disponibles en Bodega" style="-fx-font-weight: bold;"/>
+                    <TableView fx:id="tablaDisponibles" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colIdDisp" prefWidth="60.0" text="ID" />
+                            <TableColumn fx:id="colTipoDisp" prefWidth="150.0" text="Categoría" />
+                        </columns>
+                    </TableView>
+                </VBox>
+                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                    <Label text="En Mantenimiento (LIFO)" style="-fx-font-weight: bold;"/>
+                    <TableView fx:id="tablaMantenimiento" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colIdMant" prefWidth="60.0" text="ID" />
+                            <TableColumn fx:id="colTipoMant" prefWidth="150.0" text="Categoría" />
+                        </columns>
+                    </TableView>
+                </VBox>
+            </children>
+        </HBox>
+
+        <HBox spacing="10.0" alignment="CENTER_RIGHT">
+            <children>
+                <Button text="Reparar Siguiente Kit en Bodega" onAction="#repararKit" style="-fx-background-color: #8e44ad; -fx-text-fill: white;"/>
+            </children>
+        </HBox>
+    </children>
+</VBox>
