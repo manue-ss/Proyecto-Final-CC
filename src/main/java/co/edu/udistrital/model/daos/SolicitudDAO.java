@@ -33,8 +33,12 @@ public final class SolicitudDAO {
         return (data != null) ? data : new SimpleLinkedList<>();
     }
 
-    public void saveAll() {
+    private void saveAll() {
         binaryManager.guardarDatos(FILE_PATH, this.fullHistory);
+    }
+
+    public void update() {
+        saveAll();
     }
 
     public void registerRequest(Solicitud newRequest) {
@@ -94,5 +98,14 @@ public final class SolicitudDAO {
             }
         }
         return activeList;
+    }
+
+    public Solicitud getById(int id) {
+        for (Solicitud request : fullHistory) {
+            if (request.getId() == id) {
+                return request;
+            }
+        }
+        return null;
     }
 }
