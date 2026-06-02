@@ -36,21 +36,31 @@ public class APLMain extends Application {
         Navigator navegador = new Navigator(primaryStage);
 
         // 4. Configurar la Inyección de Dependencias (Controller Factory)
+        // 4. Configurar la Inyección de Dependencias (Controller Factory)
         Callback<Class<?>, Object> factory = clase -> {
             
-            // Inyección para el Dashboard Principal
             if (clase == DashboardController.class) {
                 return new DashboardController(unidadServicioDAO, navegador);
             }
-            
-            // --- AQUÍ REGISTRARÁS TUS CONTROLADORES A MEDIDA QUE LOS CREES ---
-            /* Ejemplo: Descomenta esto cuando crees el SolicitudesController.java
             if (clase == SolicitudesController.class) {
                 return new SolicitudesController(solicitudUseCase);
             }
-            */
+            if (clase == UnidadesController.class) {
+                return new UnidadesController(unidadUseCase);
+            }
+            if (clase == TecnicosController.class) {
+                return new TecnicosController(tecnicoUseCase);
+            }
+            if (clase == KitsController.class) {
+                return new KitsController(kitUseCase);
+            }
+            if (clase == ClientesController.class) {
+                return new ClientesController(clienteUseCase);
+            }
+            if (clase == AdministracionController.class) {
+                return new AdministracionController(administracionUseCase);
+            }
 
-            // Retorno por defecto si el controlador no requiere dependencias especiales
             try {
                 return clase.getDeclaredConstructor().newInstance();
             } catch (Exception e) {

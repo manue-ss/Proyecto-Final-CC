@@ -18,14 +18,17 @@ public class ClienteUseCase {
         }
 
         int nuevoId = 1;
-        while (dao.findById(nuevoId) != null) {
-            nuevoId++;
-        }
+        while (dao.findById(nuevoId) != null) { nuevoId++; }
 
         Cliente nuevoCliente = new Cliente(nuevoId, nombre, identificador, tipo);
-        
         dao.add(nuevoCliente);
-
         return nuevoCliente;
+    }
+
+    // ==========================================
+    // MÉTODO AGREGADO PARA LA INTERFAZ GRÁFICA
+    // ==========================================
+    public Iterable<Cliente> obtenerTodos() {
+        return dao.getAll();
     }
 }

@@ -186,4 +186,10 @@ public class AdministracionUseCase {
             System.err.println("Error crítico al intentar generar el archivo CSV: " + e.getMessage());
         }
     }
+    // ==========================================
+    // MÉTODO AGREGADO PARA LA INTERFAZ GRÁFICA
+    // ==========================================
+    public Iterable<Operacion> obtenerAuditoria() {
+        return operacionDAO.getHistory(); 
+    }
 }

@@ -19,45 +19,28 @@ public class UnidadUseCase {
     }
 
     public UnidadServicio registrarNuevaUnidad(String tipo, String zona) {
-
-        UnidadServicio nuevaUnidad = new UnidadServicio(TipoUnidad.valueOf(tipo),
-                EstadoUnidad.DISPONIBLE, zona, true);
+        UnidadServicio nuevaUnidad = new UnidadServicio(TipoUnidad.valueOf(tipo), EstadoUnidad.DISPONIBLE, zona, true);
         nuevaUnidad.setEstado(EstadoUnidad.DISPONIBLE);
-
         dao.add(nuevaUnidad);
-
         return nuevaUnidad;
     }
 
     public void enviarUnidadAMantenimiento(String uuid) {
         UnidadServicio us = dao.findByUuid(uuid);
-
-        if (us == null) {
-            throw new IllegalArgumentException("Error: La unidad especificada no existe en el sistema.");
-        }
+        if (us == null) throw new IllegalArgumentException("Error: La unidad especificada no existe en el sistema.");
 
         us.setEstado(EstadoUnidad.EN_MANTENIMIENTO);
         dao.update();
 
         String idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
-        Operacion opMantenimiento = new Operacion(
-                idOperacion,
-                TipoOperacion.MANTENIMIENTO_RECURSO,
-                "Unidad enviada a mantenimiento: " + uuid,
-                null,
-                null,
-                uuid,
-                null
-        );
+        Operacion opMantenimiento = new Operacion(idOperacion, TipoOperacion.MANTENIMIENTO_RECURSO,
+                "Unidad enviada a mantenimiento: " + uuid, null, null, uuid, null);
         operacionDAO.registerOperation(opMantenimiento);
     }
 
     public void liberarUnidadDeMantenimiento(String uuid) {
         UnidadServicio us = dao.findByUuid(uuid);
-
-        if (us == null) {
-            throw new IllegalArgumentException("Error: La unidad especificada no existe en el sistema.");
-        }
+        if (us == null) throw new IllegalArgumentException("Error: La unidad especificada no existe en el sistema.");
 
         us.setEstado(EstadoUnidad.DISPONIBLE);
         dao.update();
@@ -65,12 +48,16 @@ public class UnidadUseCase {
 
     public void darDeBajaUnidad(String uuid) {
         UnidadServicio us = dao.findByUuid(uuid);
-
-        if (us == null) {
-            throw new IllegalArgumentException("Error: La unidad especificada no existe en el sistema.");
-        }
+        if (us == null) throw new IllegalArgumentException("Error: La unidad especificada no existe en el sistema.");
 
         us.setEstado(EstadoUnidad.INACTIVA);
         dao.update();
+    }
+
+    // ==========================================
+    // MÉTODO AGREGADO PARA LA INTERFAZ GRÁFICA
+    // ==========================================
+    public Iterable<UnidadServicio> obtenerTodas() {
+        return dao.getAll();
     }
 }

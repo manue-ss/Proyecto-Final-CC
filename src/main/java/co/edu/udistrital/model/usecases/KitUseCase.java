@@ -15,26 +15,23 @@ public class KitUseCase {
 
     public Kit registrarNuevoKit(TipoKit tipo) {
         int nuevoId = 1;
-
-        while (dao.getById(nuevoId) != null) {
-            nuevoId++;
-        }
+        while (dao.getById(nuevoId) != null) { nuevoId++; }
 
         Kit nuevoKit = new Kit(nuevoId, tipo, EstadoKit.DISPONIBLE);
-
         dao.addKit(nuevoKit);
-
         return nuevoKit;
     }
 
     public void repararKitEnBodega() {
         Kit kitReparado = dao.popMaintenanceKit();
-
-        if (kitReparado == null) {
-            throw new IllegalStateException("No hay kits en la pila de mantenimiento para reparar.");
-        }
-
+        if (kitReparado == null) throw new IllegalStateException("No hay kits en la pila de mantenimiento para reparar.");
         dao.finishMaintenance(kitReparado);
-        
+    }
+
+    // ==========================================
+    // MÉTODO AGREGADO PARA LA INTERFAZ GRÁFICA
+    // ==========================================
+    public Iterable<Kit> obtenerTodos() {
+        return dao.getAll();
     }
 }

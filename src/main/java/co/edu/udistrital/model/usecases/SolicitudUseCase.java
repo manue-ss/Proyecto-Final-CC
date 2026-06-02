@@ -152,4 +152,13 @@ public class SolicitudUseCase {
             operacionDAO.registerOperation(opMantenimiento);
         }
     }
+    
+    /**
+     * Retorna el historial completo de solicitudes desde el DAO.
+     * Ajusta el tipo de retorno según la lista que uses (ej. SimpleLinkedList)
+     */
+    public Iterable<Solicitud> obtenerTodasLasSolicitudes() {
+        // Asumiendo que tu DAO tiene un método para obtener la lista
+        return solicitudDAO.getFullHistory(); 
+    }
 }
