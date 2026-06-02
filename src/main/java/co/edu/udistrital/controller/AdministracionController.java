@@ -26,9 +26,14 @@ public class AdministracionController {
     }
 
     @FXML public void initialize() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("uuid"));
+        colId.setCellValueFactory(cellData -> 
+            new javafx.beans.property.SimpleStringProperty(cellData.getValue().getIdOperacion())
+        );
         colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
-        colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+        colDescripcion.setCellValueFactory(cellData -> 
+            new javafx.beans.property.SimpleStringProperty(cellData.getValue().getDescripcionUI())
+        );
+        
         cargarTabla();
     }
 
