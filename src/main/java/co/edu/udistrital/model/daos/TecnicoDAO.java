@@ -5,39 +5,41 @@ import co.edu.udistrital.model.enums.EstadoTecnico;
 import co.edu.udistrital.model.structures.DoubleLinkedList;
 import co.edu.udistrital.model.util.GestorArchivosBinarios;
 
-public class TecnicoDAO {
+public final class TecnicoDAO {
 
-    private DoubleLinkedList<Tecnico> tecnicos;
-    private final GestorArchivosBinarios<DoubleLinkedList<Tecnico>> gestorBinario;
-    private static final String rutaArchivo = "tecnicos.dat";
+    private static final String FILE_PATH = "tecnicos.dat";
+
+    private final GestorArchivosBinarios<DoubleLinkedList<Tecnico>> binaryManager;
+
+    private DoubleLinkedList<Tecnico> technicians;
 
     public TecnicoDAO() {
-        this.gestorBinario = new GestorArchivosBinarios<>();
-        this.tecnicos = gestorBinario.cargarDatos(rutaArchivo);
+        this.binaryManager = new GestorArchivosBinarios<>();
+        this.technicians = binaryManager.cargarDatos(FILE_PATH);
 
-        if (this.tecnicos == null) {
-            this.tecnicos = new DoubleLinkedList<>();
+        if (this.technicians == null) {
+            this.technicians = new DoubleLinkedList<>();
         }
     }
 
-    public void agregar(Tecnico tecnico) {
-        tecnicos.addLast(tecnico);
-        guardarRespaldos();
+    public void add(Tecnico technician) {
+        technicians.addLast(technician);
+        saveAll();
     }
 
-    public DoubleLinkedList<Tecnico> obtenerDisponibles() {
-        DoubleLinkedList<Tecnico> disponibles = new DoubleLinkedList<>();
+    public DoubleLinkedList<Tecnico> getAvailable() {
+        DoubleLinkedList<Tecnico> availableList = new DoubleLinkedList<>();
 
-        for (Tecnico t : tecnicos) {
-            if (t.isDisponibilidad() && t.getEstado() == EstadoTecnico.DISPONIBLE) {
-                disponibles.addLast(t);
+        for (Tecnico t : technicians) {
+            if (t.isDisponible()) {
+                availableList.addLast(t);
             }
         }
-        return disponibles;
+        return availableList;
     }
 
-    public Tecnico buscarPorId(int id) {
-        for (Tecnico t : tecnicos) {
+    public Tecnico findById(int id) {
+        for (Tecnico t : technicians) {
             if (t.getId() == id) {
                 return t;
             }
@@ -45,17 +47,33 @@ public class TecnicoDAO {
         return null;
     }
 
-    public void actualizarEstado(Tecnico tecnicoModificado) {
-        Tecnico existente = buscarPorId(tecnicoModificado.getId());
+    public void update() {
+        saveAll();
+    }
 
-        if (existente != null) {
-            existente.setEstado(tecnicoModificado.getEstado());
-            existente.setDisponibilidad(tecnicoModificado.isDisponibilidad());
-            guardarRespaldos();
+    public void softDelete(int id) {
+        Tecnico t = findById(id);
+        if (t != null) {
+
+            t.setEstado(EstadoTecnico.RETIRADO);
+            saveAll();
         }
     }
 
-    private void guardarRespaldos() {
-        gestorBinario.guardarDatos(rutaArchivo, tecnicos);
+    public void hardDelete(int id) {
+        Tecnico t = findById(id);
+        if (t != null) {
+
+            technicians.remove(t);
+            saveAll();
+        }
+    }
+
+    public DoubleLinkedList<Tecnico> getAll() {
+        return this.technicians;
+    }
+
+    private void saveAll() {
+        binaryManager.guardarDatos(FILE_PATH, technicians);
     }
 }
