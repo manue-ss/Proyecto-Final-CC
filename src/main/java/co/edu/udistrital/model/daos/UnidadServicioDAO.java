@@ -5,39 +5,43 @@ import co.edu.udistrital.model.enums.EstadoUnidad;
 import co.edu.udistrital.model.structures.DoubleLinkedList;
 import co.edu.udistrital.model.util.GestorArchivosBinarios;
 
-public class UnidadServicioDAO {
+public final class UnidadServicioDAO {
 
-    private DoubleLinkedList<UnidadServicio> unidades;
-    private final GestorArchivosBinarios<DoubleLinkedList<UnidadServicio>> gestorBinario;
-    private final String rutaArchivo = "unidades.dat";
+    private static final String FILE_PATH = "unidades.dat";
+
+    private final GestorArchivosBinarios<DoubleLinkedList<UnidadServicio>> binaryManager;
+
+    private DoubleLinkedList<UnidadServicio> units;
 
     public UnidadServicioDAO() {
-        this.gestorBinario = new GestorArchivosBinarios<>();
-        this.unidades = gestorBinario.cargarDatos(rutaArchivo);
+        this.binaryManager = new GestorArchivosBinarios<>();
+        this.units = binaryManager.cargarDatos(FILE_PATH);
 
-        if (this.unidades == null) {
-            this.unidades = new DoubleLinkedList<>();
+        // Protección contra nulos en el primer arranque
+        if (this.units == null) {
+            this.units = new DoubleLinkedList<>();
         }
     }
 
-    public void agregar(UnidadServicio unidad) {
-        unidades.addLast(unidad);
-        guardarRespaldos();
+    public void add(UnidadServicio unit) {
+        units.addLast(unit);
+        saveAll();
     }
 
-    public DoubleLinkedList<UnidadServicio> obtenerDisponibles() {
-        DoubleLinkedList<UnidadServicio> disponibles = new DoubleLinkedList<>();
+    public DoubleLinkedList<UnidadServicio> getByState(EstadoUnidad targetState) {
+        DoubleLinkedList<UnidadServicio> filteredList = new DoubleLinkedList<>();
 
-        for (UnidadServicio u : unidades) {
-            if (u.isDisponibilidad() && u.getEstado() == EstadoUnidad.DISPONIBLE) {
-                disponibles.addLast(u);
+        for (UnidadServicio u : units) {
+            // Confiamos plenamente en el Enum como única fuente de la verdad
+            if (u.getEstado() == targetState) {
+                filteredList.addLast(u);
             }
         }
-        return disponibles;
+        return filteredList;
     }
 
-    public UnidadServicio buscarPorId(String uuid) {
-        for (UnidadServicio u : unidades) {
+    public UnidadServicio findByUuid(String uuid) {
+        for (UnidadServicio u : units) {
             if (u.getUuid().equals(uuid)) {
                 return u;
             }
@@ -45,18 +49,31 @@ public class UnidadServicioDAO {
         return null;
     }
 
-    public void actualizarEstado(UnidadServicio unidadModificada) {
-        UnidadServicio existente = buscarPorId(unidadModificada.getUuid());
+    public void update() {
+        saveAll();
+    }
 
-        if (existente != null) {
-            existente.setEstado(unidadModificada.getEstado());
-            existente.setDisponibilidad(unidadModificada.isDisponibilidad());
-            guardarRespaldos();
+    public void softDelete(String uuid) {
+        UnidadServicio u = findByUuid(uuid);
+        if (u != null) {
+            u.setEstado(EstadoUnidad.INACTIVA);
+            saveAll();
         }
     }
 
-    private void guardarRespaldos() {
-        gestorBinario.guardarDatos(rutaArchivo, unidades);
+    public void hardDelete(String uuid) {
+        UnidadServicio u = findByUuid(uuid);
+        if (u != null) {
+            units.remove(u);
+            saveAll();
+        }
     }
 
+    public DoubleLinkedList<UnidadServicio> getAll() {
+        return this.units;
+    }
+
+    private void saveAll() {
+        binaryManager.guardarDatos(FILE_PATH, units);
+    }
 }
