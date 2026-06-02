@@ -1,16 +1,11 @@
 package co.edu.udistrital.controller;
 
+import co.edu.udistrital.model.daos.*;
+import co.edu.udistrital.model.usecases.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-// Aquí importarás tu GestorArchivosBinarios, Repositorios y Casos de Uso cuando existan
 
-/**
- * Clase principal y Composition Root de la aplicación. Ensambla las
- * dependencias y arranca la interfaz gráfica.
- *
- * @author Manuel Salazar
- */
 public class APLMain extends Application {
 
     public static void main(String[] args) {
@@ -22,17 +17,25 @@ public class APLMain extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        // --- 1. INSTANCIAR MOTOR DE PERSISTENCIA ---
-        // GestorArchivosBinarios gestorBinario = new GestorArchivosBinarios();
-        // --- 2. ENSAMBLAR REPOSITORIOS Y CASOS DE USO ---
-        /* En lugar de una conexión SQL, los repositorios reciben el gestor binario 
-           (o instancian el suyo propio si lo haces estático) para cargar los archivos .dat */
-        // RepositorioCasos repoCasos = new RepositorioCasosImpl(gestorBinario);
-        // AtenderEmergenciaUseCase emergenciaUC = new AtenderEmergenciaUseCase(repoCasos);
-        // --- 3. CONFIGURAR NAVEGACIÓN ---
+        KitDAO kitDAO = new KitDAO();
+        OperacionDAO operacionDAO = new OperacionDAO();
+        SolicitudDAO solicitudDAO = new SolicitudDAO();
+        TecnicoDAO tecnicoDAO = new TecnicoDAO();
+        UnidadServicioDAO unidadServicioDAO = new UnidadServicioDAO();
+        ClienteDAO clienteDao = new ClienteDAO();
+
+        AdministracionUseCase administracionUseCase = new AdministracionUseCase(
+                solicitudDAO, tecnicoDAO, unidadServicioDAO, kitDAO,
+                operacionDAO);
+        ClienteUseCase ClienteUseCase = new ClienteUseCase(clienteDao);
+        KitUseCase kitUseCase = new KitUseCase(kitDAO);
+        SolicitudUseCase solicitudUseCase = new SolicitudUseCase(solicitudDAO,
+                tecnicoDAO, unidadServicioDAO, kitDAO, operacionDAO);
+        TecnicoUseCase tecnicoUseCase = new TecnicoUseCase(tecnicoDAO, operacionDAO);
+        UnidadUseCase unidadUseCase = new UnidadUseCase(unidadServicioDAO, operacionDAO);
+
         Navigator navegador = new Navigator(primaryStage);
 
-        // --- 4. FÁBRICA DE CONTROLADORES (INYECCIÓN A LA VISTA) ---
         Callback<Class<?>, Object> factory = clase -> {
             /*
             if (clase == ControladorMenu.class) {
@@ -43,19 +46,17 @@ public class APLMain extends Application {
                 return new ControladorEmergencias(navegador, emergenciaUC);
             }
              */
-            return null; // Fallback mientras no haya controladores
+            return null;
         };
 
         navegador.setControllerFactory(factory);
 
-        // ¡Usando tu nuevo Enum de rutas!
         // navegador.navegar(Rutas.TEMPLATE.getPath()); 
     }
 
     @Override
     public void stop() throws Exception {
-        // Al usar archivos binarios, no hay conexiones de red que mantener abiertas ni cerrar.
-        // Las escrituras se hacen instantáneamente en el disco durante la ejecución.
+
         System.out.println("Apagando la aplicación... Cerrando hilos de JavaFX.");
         super.stop();
     }
