@@ -137,5 +137,19 @@ public class SolicitudUseCase {
                 solicitud.getUuid(), solicitud.getIdKit()
         );
         operacionDAO.registerOperation(opFin);
+
+        if (kitDanado) {
+            idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
+            Operacion opMantenimiento = new Operacion(
+                    idOperacion,
+                    TipoOperacion.MANTENIMIENTO_RECURSO,
+                    "Unidad enviada a mantenimiento: " + solicitud.getIdKit(),
+                    null,
+                    null,
+                    null,
+                    solicitud.getIdKit()
+            );
+            operacionDAO.registerOperation(opMantenimiento);
+        }
     }
 }

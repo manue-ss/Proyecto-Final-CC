@@ -1,21 +1,24 @@
 package co.edu.udistrital.model.entities;
+
 import java.io.Serializable;
 import co.edu.udistrital.model.enums.TipoCliente;
 
-public class Cliente implements Serializable{
-    
+public class Cliente implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    
+
     private int id;
     private String nombre;
+    private String identificador;
     private TipoCliente tipo;
 
-    public Cliente () {
+    public Cliente() {
     }
 
-    public Cliente(int id, String nombre, TipoCliente tipo) {
+    public Cliente(int id, String nombre, String identificador, TipoCliente tipo) {
         this.id = id;
         this.nombre = nombre;
+        this.identificador = identificador;
         this.tipo = tipo;
     }
 
@@ -41,6 +44,14 @@ public class Cliente implements Serializable{
 
     public void setTipo(TipoCliente tipo) {
         this.tipo = tipo;
+    }
+
+    public String getIdentificador() {
+        return identificador;
+    }
+
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
     }
 
 }
