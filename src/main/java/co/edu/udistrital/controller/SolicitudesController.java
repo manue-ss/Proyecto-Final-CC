@@ -1,19 +1,25 @@
 package co.edu.udistrital.controller;
 
 import co.edu.udistrital.model.entities.Solicitud;
+import co.edu.udistrital.model.enums.EstadoSolicitud;
+import co.edu.udistrital.model.enums.NivelCriticidad;
+import co.edu.udistrital.model.enums.TipoSolicitud;
 import co.edu.udistrital.model.usecases.SolicitudUseCase;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class SolicitudesController {
 
     private final SolicitudUseCase useCase;
 
-    // === ELEMENTOS DE LA INTERFAZ ===
+    @FXML private TextField txtIdCliente;
+    @FXML private ComboBox<TipoSolicitud> cmbTipo;
+    @FXML private ComboBox<NivelCriticidad> cmbCriticidad;
+    @FXML private TextField txtDescripcion;
+
     @FXML private TableView<Solicitud> tablaSolicitudes;
     @FXML private TableColumn<Solicitud, Integer> colId;
     @FXML private TableColumn<Solicitud, String> colTipo;
@@ -25,35 +31,68 @@ public class SolicitudesController {
         this.useCase = useCase;
     }
 
-    @FXML 
-    public void initialize() {
-        // 1. Configurar cómo cada columna obtiene su dato de la clase Solicitud
-        // El String DEBE coincidir exactamente con el nombre de tu atributo en la clase
+    @FXML public void initialize() {
+        cmbTipo.setItems(FXCollections.observableArrayList(TipoSolicitud.values()));
+        cmbCriticidad.setItems(FXCollections.observableArrayList(NivelCriticidad.values()));
+
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         colCriticidad.setCellValueFactory(new PropertyValueFactory<>("criticidad"));
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
         colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
 
-        // 2. Cargar los datos en la tabla
-        cargarDatosEnTabla();
+        cargarTabla();
     }
 
-    private void cargarDatosEnTabla() {
-        // Obtenemos tu estructura de datos nativa desde el motor (ej. SimpleLinkedList)
-        Iterable<Solicitud> historial = useCase.obtenerTodasLasSolicitudes();
-
-        // JavaFX exige una ObservableList. Creamos una vacía.
-        ObservableList<Solicitud> listaObservable = FXCollections.observableArrayList();
-
-        // Iteramos tu estructura y pasamos los objetos a la lista visual si el historial no es nulo
-        if (historial != null) {
-            for (Solicitud solicitud : historial) {
-                listaObservable.add(solicitud);
-            }
+    @FXML private void registrarSolicitud() {
+        if (txtIdCliente.getText().isEmpty() || txtDescripcion.getText().isEmpty() || 
+            cmbTipo.getValue() == null || cmbCriticidad.getValue() == null) {
+            mostrarAlerta("Debe llenar todos los campos del formulario.");
+            return;
         }
 
-        // Finalmente, le inyectamos los datos a la tabla gráfica
-        tablaSolicitudes.setItems(listaObservable);
+        try {
+            int idCliente = Integer.parseInt(txtIdCliente.getText());
+            useCase.registrarSolicitud(idCliente, txtDescripcion.getText(), cmbTipo.getValue(), cmbCriticidad.getValue());
+            
+            txtIdCliente.clear();
+            txtDescripcion.clear();
+            cmbTipo.setValue(null);
+            cmbCriticidad.setValue(null);
+            cargarTabla();
+        } catch (NumberFormatException e) {
+            mostrarAlerta("Error: El ID del cliente debe ser un número.");
+        }
+    }
+
+    @FXML private void marcarEnEjecucion() {
+        Solicitud s = tablaSolicitudes.getSelectionModel().getSelectedItem();
+        if (s != null) { 
+            useCase.cambiarEstadoSolicitud(s.getId(), EstadoSolicitud.EN_EJECUCION); 
+            cargarTabla(); 
+        } else {
+            mostrarAlerta("Seleccione una solicitud de la tabla primero.");
+        }
+    }
+
+    @FXML private void finalizarSolicitud() {
+        Solicitud s = tablaSolicitudes.getSelectionModel().getSelectedItem();
+        if (s != null) { 
+            useCase.cambiarEstadoSolicitud(s.getId(), EstadoSolicitud.ATENDIDA); 
+            cargarTabla(); 
+        } else {
+            mostrarAlerta("Seleccione una solicitud de la tabla primero.");
+        }
+    }
+
+    private void cargarTabla() {
+        ObservableList<Solicitud> lista = FXCollections.observableArrayList();
+        Iterable<Solicitud> datos = useCase.obtenerTodasLasSolicitudes();
+        if (datos != null) { for (Solicitud s : datos) { lista.add(s); } }
+        tablaSolicitudes.setItems(lista);
+    }
+
+    private void mostrarAlerta(String msg) {
+        new Alert(Alert.AlertType.WARNING, msg).showAndWait();
     }
 }

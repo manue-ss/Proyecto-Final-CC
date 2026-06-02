@@ -161,4 +161,30 @@ public class SolicitudUseCase {
         // Asumiendo que tu DAO tiene un método para obtener la lista
         return solicitudDAO.getFullHistory(); 
     }
+    public Solicitud registrarSolicitud(int idCliente, String descripcion, TipoSolicitud tipo, co.edu.udistrital.model.enums.NivelCriticidad criticidad) {
+        int maxId = 0;
+        Iterable<Solicitud> list = solicitudDAO.getFullHistory();
+        if (list != null) {
+            for (Solicitud s : list) {
+                if (s.getId() > maxId) maxId = s.getId();
+            }
+        }
+        
+        Solicitud nueva = new Solicitud(maxId + 1, idCliente, null, 0, descripcion, tipo, criticidad, co.edu.udistrital.model.enums.EstadoSolicitud.PENDIENTE);
+        solicitudDAO.registerRequest(nueva);
+        return nueva;
+    }
+
+    public void cambiarEstadoSolicitud(int idSolicitud, co.edu.udistrital.model.enums.EstadoSolicitud nuevoEstado) {
+        Iterable<Solicitud> list = solicitudDAO.getFullHistory();
+        if (list != null) {
+            for (Solicitud s : list) {
+                if (s.getId() == idSolicitud) {
+                    s.setEstado(nuevoEstado);
+                    solicitudDAO.update();
+                    break;
+                }
+            }
+        }
+    }
 }
