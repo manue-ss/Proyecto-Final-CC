@@ -39,6 +39,7 @@ public class AdministracionController {
         try {
             useCase.deshacerUltimaOperacion();
             cargarTabla();
+            EventoGlobal.notificarCambio();
             new Alert(Alert.AlertType.INFORMATION, "La operación se deshizo correctamente.").show();
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "No se pudo deshacer: " + e.getMessage()).show();

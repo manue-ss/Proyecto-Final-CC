@@ -125,7 +125,7 @@ public class SolicitudesController {
             cmbTipo.setValue(null);
             cmbCriticidad.setValue(null);
             actualizarDatosVisuales();
-            // EventoGlobal.notificarCambio(); 
+            EventoGlobal.notificarCambio();
         }
         catch (IllegalArgumentException e) {
             mostrarAlerta(Alert.AlertType.ERROR, e.getMessage());
@@ -146,7 +146,7 @@ public class SolicitudesController {
             useCase.despacharServicio(idTecnico, uuidUnidad, chkRequiereKit.isSelected());
             chkRequiereKit.setSelected(false);
             actualizarDatosVisuales();
-            // EventoGlobal.notificarCambio();
+            EventoGlobal.notificarCambio();
         }
         catch (Exception e) {
             mostrarAlerta(Alert.AlertType.ERROR, e.getMessage());
@@ -161,7 +161,7 @@ public class SolicitudesController {
                 useCase.finalizarSolicitudAtendida(s.getId(), chkKitDanado.isSelected());
                 chkKitDanado.setSelected(false);
                 actualizarDatosVisuales();
-                // EventoGlobal.notificarCambio();
+                EventoGlobal.notificarCambio();
             }
             catch (Exception e) {
                 mostrarAlerta(Alert.AlertType.ERROR, e.getMessage());

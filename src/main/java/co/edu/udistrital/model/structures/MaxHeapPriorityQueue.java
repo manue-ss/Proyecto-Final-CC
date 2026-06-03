@@ -25,10 +25,8 @@ public class MaxHeapPriorityQueue<T extends Comparable<T>> implements Iterable<T
             throw new IllegalArgumentException("No se permiten elementos nulos en la cola de prioridad");
         }
 
-        // 1. Insertar en la última posición disponible (siguiente hoja)
         heap.add(dato);
 
-        // 2. Flotar el elemento hasta restaurar la propiedad Max-Heap
         flotar(heap.size() - 1);
     }
 
@@ -87,7 +85,7 @@ public class MaxHeapPriorityQueue<T extends Comparable<T>> implements Iterable<T
 
     public MaxHeapPriorityQueue<T> clone() {
         MaxHeapPriorityQueue<T> clon = new MaxHeapPriorityQueue<>();
-        clon.heap.addAll(this.heap); // Operación optimizada a O(n)
+        clon.heap.addAll(this.heap);
         return clon;
     }
 
@@ -99,7 +97,6 @@ public class MaxHeapPriorityQueue<T extends Comparable<T>> implements Iterable<T
     @SuppressWarnings("unchecked")
     private int comparar(T a, T b) {
         if (this.comparador != null) {
-            // Usar la regla externa
             return this.comparador.compare(a, b);
         } else {
 

@@ -52,7 +52,6 @@ public class TecnicosController {
         if (seleccionado != null) {
             useCase.enviarTecnicoADescanso(seleccionado.getId());
             cargarTabla();
-            EventoGlobal.notificarCambio();
         } else mostrarAlerta();
     }
 
@@ -61,7 +60,6 @@ public class TecnicosController {
         if (seleccionado != null) {
             useCase.retornarTecnicoDeDescanso(seleccionado.getId());
             cargarTabla();
-            EventoGlobal.notificarCambio();
         } else mostrarAlerta();
     }
 
@@ -70,7 +68,6 @@ public class TecnicosController {
         if (seleccionado != null) {
             useCase.despedirTecnico(seleccionado.getId());
             cargarTabla();
-            EventoGlobal.notificarCambio();
         } else mostrarAlerta();
     }
 

@@ -17,7 +17,6 @@ public final class UnidadServicioDAO {
         this.binaryManager = new GestorArchivosBinarios<>();
         this.units = binaryManager.cargarDatos(FILE_NAME);
 
-        // Protección contra nulos en el primer arranque
         if (this.units == null) {
             this.units = new DoubleLinkedList<>();
         }
@@ -32,7 +31,6 @@ public final class UnidadServicioDAO {
         DoubleLinkedList<UnidadServicio> filteredList = new DoubleLinkedList<>();
 
         for (UnidadServicio u : units) {
-            // Confiamos plenamente en el Enum como única fuente de la verdad
             if (u.getEstado() == targetState) {
                 filteredList.addLast(u);
             }
