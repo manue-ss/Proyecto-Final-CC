@@ -1,20 +1,21 @@
 package co.edu.udistrital.controller;
 
-/**
- * Diccionario centralizado de todas las rutas de las vistas FXML.
- * * @author Manuel Salazar
- */
 public enum Paths {
     
-    // Ruta absoluta desde la raíz de resources, incluyendo la extensión
-    TEMPLATE("template.fxml");
+    DASHBOARD("Dashboard.fxml"),
+    MODULO_SOLICITUDES("SolicitudesView.fxml"),
+    MODULO_TECNICOS("TecnicosView.fxml"),
+    MODULO_UNIDADES("UnidadesView.fxml"),
+    MODULO_KITS("KitsView.fxml"),
+    MODULO_CLIENTES("ClientesView.fxml"),
+    MODULO_ADMINISTRACION("AdministracionView.fxml");
 
     private final String RUTA;
-    
-    private static final String BASE_PATH = "/co/edu/udistrital/view/";
+
+    private static final String BASE_PATH = "/co/edu/udistrital/view/"; 
 
     Paths(String RUTA) {
-        this.RUTA =  RUTA;
+        this.RUTA = RUTA;
     }
 
     public String getPath() {

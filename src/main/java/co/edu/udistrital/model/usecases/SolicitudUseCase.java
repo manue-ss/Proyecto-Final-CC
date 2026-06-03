@@ -3,7 +3,9 @@ package co.edu.udistrital.model.usecases;
 import co.edu.udistrital.model.daos.*;
 import co.edu.udistrital.model.entities.*;
 import co.edu.udistrital.model.enums.*;
-import java.util.Objects;
+import co.edu.udistrital.model.structures.DoubleLinkedList;
+import co.edu.udistrital.model.structures.SimpleLinkedList;
+import java.time.LocalDate;
 
 public class SolicitudUseCase {
 
@@ -12,22 +14,30 @@ public class SolicitudUseCase {
     private final UnidadServicioDAO unidadDAO;
     private final KitDAO kitDAO;
     private final OperacionDAO operacionDAO;
+    private final ClienteDAO clienteDAO;
 
     public SolicitudUseCase(SolicitudDAO solicitudDAO, TecnicoDAO tecnicoDAO,
-            UnidadServicioDAO unidadDAO, KitDAO kitDAO, OperacionDAO operacionDAO) {
+            UnidadServicioDAO unidadDAO, KitDAO kitDAO, OperacionDAO operacionDAO, ClienteDAO clienteDAO) {
         this.solicitudDAO = solicitudDAO;
         this.tecnicoDAO = tecnicoDAO;
         this.unidadDAO = unidadDAO;
         this.kitDAO = kitDAO;
         this.operacionDAO = operacionDAO;
+        this.clienteDAO = clienteDAO;
     }
 
-    public Solicitud crearSolicitud(int idCliente, String descripcion, TipoSolicitud tipo, NivelCriticidad criticidad) {
+    public Solicitud registrarSolicitud(String identificadorCliente, String descripcion, TipoSolicitud tipo, NivelCriticidad criticidad) {
+        Cliente cliente = clienteDAO.findByIdentificador(identificadorCliente);
+
+        if (cliente == null) {
+            throw new IllegalArgumentException("El cliente con identificador " + identificadorCliente + " no se encuentra registrado.");
+        }
+
         int nuevoId = solicitudDAO.getFullHistory().size() + 1;
 
         Solicitud nuevaSolicitud = new Solicitud(
                 nuevoId,
-                idCliente,
+                cliente.getId(),
                 null,
                 0,
                 descripcion,
@@ -40,15 +50,16 @@ public class SolicitudUseCase {
         return nuevaSolicitud;
     }
 
-    public void despacharServicio(int idSolicitud, int idTecnico, String uuidUnidad, boolean requiereKit) {
+    public void despacharServicio(int idTecnico, String uuidUnidad, boolean requiereKit) {
+        Solicitud solicitud = solicitudDAO.pollNextIncident();
+        if (solicitud == null) {
+            throw new IllegalStateException("No hay solicitudes pendientes en la cola.");
+        }
 
-        // 1. Recuperar las referencias REALES de la memoria usando los DAOs
-        Solicitud solicitud = solicitudDAO.getById(idSolicitud);
         Tecnico tecnico = tecnicoDAO.findById(idTecnico);
         UnidadServicio unidad = unidadDAO.findByUuid(uuidUnidad);
 
-        // 2. Validaciones de seguridad
-        if (solicitud == null || tecnico == null || unidad == null) {
+        if (tecnico == null || unidad == null) {
             throw new IllegalArgumentException("Uno de los recursos seleccionados no existe en el sistema.");
         }
         if (solicitud.getEstado() != EstadoSolicitud.PENDIENTE) {
@@ -61,7 +72,6 @@ public class SolicitudUseCase {
             throw new IllegalStateException("La unidad de servicio no está disponible.");
         }
 
-        // 3. Extracción del Kit si se requiere
         Kit kitAsignado = null;
         if (requiereKit) {
             kitAsignado = kitDAO.popReadyKit();
@@ -70,8 +80,7 @@ public class SolicitudUseCase {
             }
         }
 
-        // 4. Modificamos los estados y enlazamos TODO dentro de la Solicitud
-        Integer idKit = (kitAsignado != null) ? kitAsignado.getId() : null;
+        int idKit = (kitAsignado != null) ? kitAsignado.getId() : 0;
 
         solicitud.setEstado(EstadoSolicitud.EN_EJECUCION);
         solicitud.setIdTecnico(tecnico.getId());
@@ -81,23 +90,20 @@ public class SolicitudUseCase {
         tecnico.setEstado(EstadoTecnico.ASIGNADO);
         unidad.setEstado(EstadoUnidad.OCUPADA);
 
-        // 5. Persistencia
         solicitudDAO.update();
         tecnicoDAO.update();
         unidadDAO.update();
 
-        // 6. Registro Atómico para el Deshacer
         String idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
         Operacion opDespacho = new Operacion(
-                idOperacion, TipoOperacion.ASIGNACION_SERVICIO,
+                idOperacion, TipoOperacion.DESPACHO_SOLICITUD,
                 "Asignación Atómica: Solicitud " + solicitud.getId(),
                 solicitud.getId(), tecnico.getId(), unidad.getUuid(), idKit
         );
         operacionDAO.registerOperation(opDespacho);
     }
 
-    public void finalizarSolicitud(int idSolicitud, boolean kitDanado) {
-
+    public void finalizarSolicitudAtendida(int idSolicitud, boolean kitDanado) {
         Solicitud solicitud = solicitudDAO.getById(idSolicitud);
 
         if (solicitud == null || solicitud.getEstado() != EstadoSolicitud.EN_EJECUCION) {
@@ -107,7 +113,8 @@ public class SolicitudUseCase {
         Tecnico tecnico = tecnicoDAO.findById(solicitud.getIdTecnico());
         UnidadServicio unidad = unidadDAO.findByUuid(solicitud.getUuid());
 
-        solicitud.setEstado(EstadoSolicitud.ATENDIDA); // O CERRADA
+        solicitud.setEstado(EstadoSolicitud.ATENDIDA);
+        solicitud.setFechaResolucion(LocalDate.now());
 
         if (tecnico != null) {
             tecnico.setEstado(EstadoTecnico.DISPONIBLE);
@@ -116,10 +123,8 @@ public class SolicitudUseCase {
             unidad.setEstado(EstadoUnidad.DISPONIBLE);
         }
 
-        if (!Objects.isNull(solicitud.getIdKit())) {
-
+        if (solicitud.getIdKit() != 0) {
             Kit kitUsado = kitDAO.getById(solicitud.getIdKit());
-
             if (kitUsado != null) {
                 kitDAO.returnFromService(kitUsado, kitDanado);
             }
@@ -131,7 +136,7 @@ public class SolicitudUseCase {
 
         String idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
         Operacion opFin = new Operacion(
-                idOperacion, TipoOperacion.CIERRE_SERVICIO,
+                idOperacion, TipoOperacion.FINALIZACION_SOLICITUD,
                 "Cierre Atómico: Solicitud " + solicitud.getId() + " finalizada.",
                 solicitud.getId(), solicitud.getIdTecnico(),
                 solicitud.getUuid(), solicitud.getIdKit()
@@ -139,11 +144,11 @@ public class SolicitudUseCase {
         operacionDAO.registerOperation(opFin);
 
         if (kitDanado) {
-            idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
+            String idOperacionMantenimiento = "OP-" + (operacionDAO.getHistory().size() + 1);
             Operacion opMantenimiento = new Operacion(
-                    idOperacion,
-                    TipoOperacion.MANTENIMIENTO_RECURSO,
-                    "Unidad enviada a mantenimiento: " + solicitud.getIdKit(),
+                    idOperacionMantenimiento,
+                    TipoOperacion.KIT_A_REVISION,
+                    "Kit enviado a mantenimiento: " + solicitud.getIdKit(),
                     null,
                     null,
                     null,
@@ -151,5 +156,21 @@ public class SolicitudUseCase {
             );
             operacionDAO.registerOperation(opMantenimiento);
         }
+    }
+
+    public Solicitud obtenerProximaSolicitud() {
+        return solicitudDAO.peekNextIncident();
+    }
+
+    public SimpleLinkedList<Solicitud> obtenerTodasLasSolicitudes() {
+        return solicitudDAO.getFullHistory();
+    }
+
+    public DoubleLinkedList<Tecnico> obtenerTecnicosDisponibles() {
+        return tecnicoDAO.getAvailable();
+    }
+
+    public DoubleLinkedList<UnidadServicio> obtenerUnidadesDisponibles() {
+        return unidadDAO.getByState(EstadoUnidad.DISPONIBLE);
     }
 }

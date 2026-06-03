@@ -7,7 +7,7 @@ import co.edu.udistrital.model.util.GestorArchivosBinarios;
 
 public final class UnidadServicioDAO {
 
-    private static final String FILE_PATH = "unidades.dat";
+    private static final String FILE_NAME = "unidades.dat";
 
     private final GestorArchivosBinarios<DoubleLinkedList<UnidadServicio>> binaryManager;
 
@@ -15,9 +15,8 @@ public final class UnidadServicioDAO {
 
     public UnidadServicioDAO() {
         this.binaryManager = new GestorArchivosBinarios<>();
-        this.units = binaryManager.cargarDatos(FILE_PATH);
+        this.units = binaryManager.cargarDatos(FILE_NAME);
 
-        // Protección contra nulos en el primer arranque
         if (this.units == null) {
             this.units = new DoubleLinkedList<>();
         }
@@ -32,7 +31,6 @@ public final class UnidadServicioDAO {
         DoubleLinkedList<UnidadServicio> filteredList = new DoubleLinkedList<>();
 
         for (UnidadServicio u : units) {
-            // Confiamos plenamente en el Enum como única fuente de la verdad
             if (u.getEstado() == targetState) {
                 filteredList.addLast(u);
             }
@@ -74,6 +72,6 @@ public final class UnidadServicioDAO {
     }
 
     private void saveAll() {
-        binaryManager.guardarDatos(FILE_PATH, units);
+        binaryManager.guardarDatos(FILE_NAME, units);
     }
 }

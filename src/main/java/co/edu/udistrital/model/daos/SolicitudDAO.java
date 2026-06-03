@@ -10,7 +10,7 @@ import co.edu.udistrital.model.util.GestorArchivosBinarios;
 
 public final class SolicitudDAO {
 
-    private final String FILE_PATH = "solicitudes.dat";
+    private final String FILE_NAME = "solicitudes.dat";
     private final GestorArchivosBinarios<SimpleLinkedList<Solicitud>> binaryManager;
 
     private SimpleLinkedList<Solicitud> fullHistory;
@@ -29,12 +29,12 @@ public final class SolicitudDAO {
     }
 
     private SimpleLinkedList<Solicitud> loadAll() {
-        SimpleLinkedList<Solicitud> data = binaryManager.cargarDatos(FILE_PATH);
+        SimpleLinkedList<Solicitud> data = binaryManager.cargarDatos(FILE_NAME);
         return (data != null) ? data : new SimpleLinkedList<>();
     }
 
     private void saveAll() {
-        binaryManager.guardarDatos(FILE_PATH, this.fullHistory);
+        binaryManager.guardarDatos(FILE_NAME, this.fullHistory);
     }
 
     public void update() {
@@ -55,7 +55,6 @@ public final class SolicitudDAO {
 
             if (request.getEstado() == EstadoSolicitud.PENDIENTE) {
 
-                // Using the Enum's numeric value: > 1 goes to Heap, <= 1 goes to FIFO
                 if (request.getCriticidad().getNivel() > NivelCriticidad.ORDINARIA.getNivel()) {
                     criticalQueue.enqueue(request);
                 } else {
@@ -82,6 +81,20 @@ public final class SolicitudDAO {
             saveAll();
         }
 
+        return nextIncident;
+    }
+
+    public Solicitud peekNextIncident() {
+        sortPendingRequests();
+        Solicitud nextIncident = null;
+
+        if (!criticalQueue.isEmpty()) {
+            nextIncident = criticalQueue.dequeue();
+        } else if (!ordinaryQueue.isEmpty()) {
+            nextIncident = ordinaryQueue.dequeue();
+        }
+
+        sortPendingRequests();
         return nextIncident;
     }
 

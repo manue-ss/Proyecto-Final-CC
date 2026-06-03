@@ -6,13 +6,13 @@ import co.edu.udistrital.model.util.GestorArchivosBinarios;
 
 public final class ClienteDAO {
 
-    private static final String FILE_PATH = "clientes.dat";
+    private static final String FILE_NAME = "clientes.dat";
     private final GestorArchivosBinarios<SimpleLinkedList<Cliente>> binaryManager;
     private SimpleLinkedList<Cliente> clientes;
 
     public ClienteDAO() {
         this.binaryManager = new GestorArchivosBinarios<>();
-        this.clientes = binaryManager.cargarDatos(FILE_PATH);
+        this.clientes = binaryManager.cargarDatos(FILE_NAME);
 
         if (this.clientes == null) {
             this.clientes = new SimpleLinkedList<>();
@@ -51,6 +51,6 @@ public final class ClienteDAO {
     }
 
     private void saveAll() {
-        binaryManager.guardarDatos(FILE_PATH, clientes);
+        binaryManager.guardarDatos(FILE_NAME, clientes);
     }
 }

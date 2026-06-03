@@ -10,7 +10,6 @@ public class APLMain extends Application {
 
     public static void main(String[] args) {
         System.out.println("Arrancando sistema AutoRescate 24/7!");
-
         launch();
     }
 
@@ -22,41 +21,58 @@ public class APLMain extends Application {
         SolicitudDAO solicitudDAO = new SolicitudDAO();
         TecnicoDAO tecnicoDAO = new TecnicoDAO();
         UnidadServicioDAO unidadServicioDAO = new UnidadServicioDAO();
-        ClienteDAO clienteDao = new ClienteDAO();
+        ClienteDAO clienteDAO = new ClienteDAO();
 
-        AdministracionUseCase administracionUseCase = new AdministracionUseCase(
-                solicitudDAO, tecnicoDAO, unidadServicioDAO, kitDAO,
-                operacionDAO);
-        ClienteUseCase ClienteUseCase = new ClienteUseCase(clienteDao);
-        KitUseCase kitUseCase = new KitUseCase(kitDAO);
-        SolicitudUseCase solicitudUseCase = new SolicitudUseCase(solicitudDAO,
-                tecnicoDAO, unidadServicioDAO, kitDAO, operacionDAO);
+        AdministracionUseCase administracionUseCase = new AdministracionUseCase(solicitudDAO, tecnicoDAO, unidadServicioDAO, kitDAO, operacionDAO);
+        ClienteUseCase clienteUseCase = new ClienteUseCase(clienteDAO);
+        KitUseCase kitUseCase = new KitUseCase(kitDAO, operacionDAO);
+        SolicitudUseCase solicitudUseCase = new SolicitudUseCase(solicitudDAO, tecnicoDAO, unidadServicioDAO, kitDAO, operacionDAO, clienteDAO);
         TecnicoUseCase tecnicoUseCase = new TecnicoUseCase(tecnicoDAO, operacionDAO);
         UnidadUseCase unidadUseCase = new UnidadUseCase(unidadServicioDAO, operacionDAO);
 
         Navigator navegador = new Navigator(primaryStage);
 
         Callback<Class<?>, Object> factory = clase -> {
-            /*
-            if (clase == ControladorMenu.class) {
-                return new ControladorMenu(navegador);
+
+            if (clase == DashboardController.class) {
+                return new DashboardController(unidadUseCase, navegador);
             }
-            if (clase == ControladorEmergencias.class) {
-                // Inyectamos la lógica de negocio puramente en memoria
-                return new ControladorEmergencias(navegador, emergenciaUC);
+            if (clase == SolicitudesController.class) {
+                return new SolicitudesController(solicitudUseCase);
             }
-             */
-            return null;
+            if (clase == UnidadesController.class) {
+                return new UnidadesController(unidadUseCase);
+            }
+            if (clase == TecnicosController.class) {
+                return new TecnicosController(tecnicoUseCase);
+            }
+            if (clase == KitsController.class) {
+                return new KitsController(kitUseCase);
+            }
+            if (clase == ClientesController.class) {
+                return new ClientesController(clienteUseCase);
+            }
+            if (clase == AdministracionController.class) {
+                return new AdministracionController(administracionUseCase);
+            }
+
+            try {
+                return clase.getDeclaredConstructor().newInstance();
+            }
+            catch (Exception e) {
+                System.err.println("No se pudo instanciar el controlador: " + clase.getName());
+                return null;
+            }
         };
 
         navegador.setControllerFactory(factory);
 
-        // navegador.navegar(Rutas.TEMPLATE.getPath()); 
+        primaryStage.setTitle("Central Operativa - AutoRescate");
+        navegador.navegar(Paths.DASHBOARD);
     }
 
     @Override
     public void stop() throws Exception {
-
         System.out.println("Apagando la aplicación... Cerrando hilos de JavaFX.");
         super.stop();
     }

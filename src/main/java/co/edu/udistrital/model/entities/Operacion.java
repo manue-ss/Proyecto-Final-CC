@@ -53,4 +53,8 @@ public class Operacion implements Serializable {
     public TipoOperacion getTipo() {
         return tipo;
     }
+
+    public String getIdOperacion() {
+        return idOperacion;
+    }
 }

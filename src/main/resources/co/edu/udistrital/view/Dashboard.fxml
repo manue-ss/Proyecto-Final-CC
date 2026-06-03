@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udistrital.controller.DashboardController">
+   
+   <top>
+      <HBox alignment="CENTER" prefHeight="90.0" spacing="80.0" style="-fx-background-color: #2c3e50;" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="CENTER" spacing="5.0">
+               <Label text="UNIDADES DISPONIBLES" textFill="WHITE">
+                  <font><Font name="System Bold" size="14.0" /></font>
+               </Label>
+               <Label fx:id="lblDisponibles" text="Calculando..." textFill="#2ecc71">
+                  <font><Font name="System Bold" size="24.0" /></font>
+               </Label>
+            </VBox>
+            <VBox alignment="CENTER" spacing="5.0">
+               <Label text="UNIDADES EN SERVICIO" textFill="WHITE">
+                  <font><Font name="System Bold" size="14.0" /></font>
+               </Label>
+               <Label fx:id="lblOcupadas" text="Calculando..." textFill="#e74c3c">
+                  <font><Font name="System Bold" size="24.0" /></font>
+               </Label>
+            </VBox>
+            <VBox alignment="CENTER" spacing="5.0">
+               <Label text="EN MANTENIMIENTO" textFill="WHITE">
+                  <font><Font name="System Bold" size="14.0" /></font>
+               </Label>
+               <Label fx:id="lblMantenimiento" text="Calculando..." textFill="#f1c40f">
+                  <font><Font name="System Bold" size="24.0" /></font>
+               </Label>
+            </VBox>
+         </children>
+      </HBox>
+   </top>
+
+   <left>
+      <VBox prefWidth="250.0" spacing="15.0" style="-fx-background-color: #34495e;" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="30.0" />
+         </padding>
+         <children>
+            <Label text="CENTRAL OPERATIVA" textFill="#bdc3c7">
+               <font><Font name="System Bold" size="18.0" /></font>
+               <VBox.margin><Insets bottom="10.0" /></VBox.margin>
+            </Label>
+            <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#abrirSolicitudes" prefHeight="40.0" text="1. Gestión de Emergencias" />
+            <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#abrirUnidades" prefHeight="40.0" text="2. Flota y Unidades" />
+            <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#abrirTecnicos" prefHeight="40.0" text="3. Personal Técnico" />
+            <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#abrirKits" prefHeight="40.0" text="4. Inventario de Kits" />
+            <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#abrirClientes" prefHeight="40.0" text="5. Directorio de Clientes" />
+            <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#abrirAdministracion" prefHeight="40.0" text="6. Auditoría y Reportes" />
+         </children>
+      </VBox>
+   </left>
+
+   <center>
+      <StackPane fx:id="panelContenido" style="-fx-background-color: #ecf0f1;" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

@@ -6,9 +6,9 @@ import java.util.UUID;
 import java.io.Serializable;
 
 public class UnidadServicio implements Serializable {
-    
-    private static final long serialVersionUID = 1L;    
-    
+
+    private static final long serialVersionUID = 1L;
+
     private String uuid;
     private TipoUnidad tipo;
     private EstadoUnidad estado;
@@ -43,7 +43,8 @@ public class UnidadServicio implements Serializable {
     }
 
     public boolean isDisponibilidad() {
-        return disponibilidad;
+        this.disponibilidad = (this.estado == EstadoUnidad.DISPONIBLE);
+        return this.disponibilidad;
     }
 
     public void setUuid() {
@@ -56,6 +57,7 @@ public class UnidadServicio implements Serializable {
 
     public void setEstado(EstadoUnidad estado) {
         this.estado = estado;
+        this.disponibilidad = (this.estado == EstadoUnidad.DISPONIBLE);
     }
 
     public void setZona(String zona) {

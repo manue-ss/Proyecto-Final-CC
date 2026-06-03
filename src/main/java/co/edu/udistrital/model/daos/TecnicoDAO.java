@@ -7,7 +7,7 @@ import co.edu.udistrital.model.util.GestorArchivosBinarios;
 
 public final class TecnicoDAO {
 
-    private static final String FILE_PATH = "tecnicos.dat";
+    private static final String FILE_NAME = "tecnicos.dat";
 
     private final GestorArchivosBinarios<DoubleLinkedList<Tecnico>> binaryManager;
 
@@ -15,7 +15,7 @@ public final class TecnicoDAO {
 
     public TecnicoDAO() {
         this.binaryManager = new GestorArchivosBinarios<>();
-        this.technicians = binaryManager.cargarDatos(FILE_PATH);
+        this.technicians = binaryManager.cargarDatos(FILE_NAME);
 
         if (this.technicians == null) {
             this.technicians = new DoubleLinkedList<>();
@@ -74,6 +74,6 @@ public final class TecnicoDAO {
     }
 
     private void saveAll() {
-        binaryManager.guardarDatos(FILE_PATH, technicians);
+        binaryManager.guardarDatos(FILE_NAME, technicians);
     }
 }

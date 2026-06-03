@@ -3,6 +3,7 @@ package co.edu.udistrital.model.usecases;
 import co.edu.udistrital.model.daos.ClienteDAO;
 import co.edu.udistrital.model.entities.Cliente;
 import co.edu.udistrital.model.enums.TipoCliente;
+import co.edu.udistrital.model.structures.SimpleLinkedList;
 
 public class ClienteUseCase {
 
@@ -23,9 +24,12 @@ public class ClienteUseCase {
         }
 
         Cliente nuevoCliente = new Cliente(nuevoId, nombre, identificador, tipo);
-        
         dao.add(nuevoCliente);
-
         return nuevoCliente;
+    }
+
+
+    public SimpleLinkedList<Cliente> obtenerTodos() {
+        return dao.getAll();
     }
 }

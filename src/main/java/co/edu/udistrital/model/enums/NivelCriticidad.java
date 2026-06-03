@@ -1,8 +1,8 @@
 package co.edu.udistrital.model.enums;
 
 public enum NivelCriticidad {
-    SIN_PRIORIDAD(0),
-    ORDINARIA(1),
+    ORDINARIA(0),
+    BAJA(1),
     MEDIA(3),
     CRITICA(5);
 

@@ -3,12 +3,13 @@ package co.edu.udistrital.model.daos;
 import co.edu.udistrital.model.entities.Kit;
 import co.edu.udistrital.model.enums.EstadoKit;
 import co.edu.udistrital.model.structures.SimpleLinkedList;
+import co.edu.udistrital.model.structures.Stack;
 import co.edu.udistrital.model.util.GestorArchivosBinarios;
 import co.edu.udistrital.model.util.InventarioKitsData;
 
 public final class KitDAO {
 
-    private static final String FILE_PATH = "kits.dat";
+    private static final String FILE_NAME = "kits.dat";
 
     private final GestorArchivosBinarios<InventarioKitsData> binaryManager;
 
@@ -17,7 +18,7 @@ public final class KitDAO {
     public KitDAO() {
         this.binaryManager = new GestorArchivosBinarios<>();
 
-        this.data = binaryManager.cargarDatos(FILE_PATH);
+        this.data = binaryManager.cargarDatos(FILE_NAME);
 
         if (this.data == null) {
             this.data = new InventarioKitsData();
@@ -77,12 +78,20 @@ public final class KitDAO {
         return data.fullInventory;
     }
 
+    public Stack<Kit> getReadyStack() {
+        return data.readyStack;
+    }
+
+    public Stack<Kit> getMaintenanceStack() {
+        return data.maintenanceStack;
+    }
+
     public void update() {
         saveAll();
     }
 
     private void saveAll() {
-        binaryManager.guardarDatos(FILE_PATH, data);
+        binaryManager.guardarDatos(FILE_NAME, data);
     }
 
     public Kit getById(int id) {
