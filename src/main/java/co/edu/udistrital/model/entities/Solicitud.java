@@ -3,6 +3,7 @@ package co.edu.udistrital.model.entities;
 import co.edu.udistrital.model.enums.TipoSolicitud;
 import co.edu.udistrital.model.enums.NivelCriticidad;
 import co.edu.udistrital.model.enums.EstadoSolicitud;
+import co.edu.udistrital.model.enums.Zonas;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -20,11 +21,14 @@ public class Solicitud implements Comparable<Solicitud>, Serializable {
     private NivelCriticidad criticidad;
     private EstadoSolicitud estado;
     private LocalDate fechaResolucion;
+    private Zonas zona;
 
     public Solicitud() {
     }
 
-    public Solicitud(int id, int idCliente, String uuidUs, int idTecnico, String descripcion, TipoSolicitud tipo, NivelCriticidad criticidad, EstadoSolicitud estado) {
+    public Solicitud(int id, int idCliente, String uuidUs, int idTecnico,
+            String descripcion, TipoSolicitud tipo, NivelCriticidad criticidad,
+            EstadoSolicitud estado, Zonas zona) {
         this.id = id;
         this.idCliente = idCliente;
         this.uuidUs = uuidUs;
@@ -33,6 +37,7 @@ public class Solicitud implements Comparable<Solicitud>, Serializable {
         this.tipo = tipo;
         this.criticidad = criticidad;
         this.estado = estado;
+        this.zona = zona;
     }
 
     public int getId() {
@@ -115,11 +120,20 @@ public class Solicitud implements Comparable<Solicitud>, Serializable {
         this.fechaResolucion = fechaResolucion;
     }
 
+    public Zonas getZona() {
+        return zona;
+    }
+
+    public void setZona(Zonas zona) {
+        this.zona = zona;
+    }
+
     @Override
+
     public int compareTo(Solicitud otraSolicitud) {
         int comparacionCriticidad = this.criticidad.compareTo(otraSolicitud.getCriticidad());
         if (comparacionCriticidad == 0) {
-            return Integer.compare(this.id, otraSolicitud.getId());
+            return Integer.compare(otraSolicitud.getId(), this.id);
         }
         return comparacionCriticidad;
     }

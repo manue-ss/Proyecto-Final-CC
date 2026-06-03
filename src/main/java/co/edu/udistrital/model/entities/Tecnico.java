@@ -1,16 +1,19 @@
 package co.edu.udistrital.model.entities;
 
+import co.edu.udistrital.model.enums.Especialidades;
 import java.io.Serializable;
 import co.edu.udistrital.model.enums.EstadoTecnico;
+import co.edu.udistrital.model.enums.Zonas;
 
 public class Tecnico implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private int id;
-    private String especialidad;
+
     private EstadoTecnico estado;
-    private String zona;
+    private Especialidades especialidad;
+    private Zonas zona;
     private boolean disponibilidad;
 
     public Tecnico() {
@@ -20,7 +23,7 @@ public class Tecnico implements Serializable {
         return id;
     }
 
-    public String getEspecialidad() {
+    public Especialidades getEspecialidad() {
         return especialidad;
     }
 
@@ -28,7 +31,7 @@ public class Tecnico implements Serializable {
         return estado;
     }
 
-    public String getZona() {
+    public Zonas getZona() {
         return zona;
     }
 
@@ -41,15 +44,15 @@ public class Tecnico implements Serializable {
         this.id = id;
     }
 
-    public void setEspecialidad(String especialidad) {
-        this.especialidad = especialidad;
-    }
-
     public void setEstado(EstadoTecnico estado) {
         this.estado = estado;
     }
 
-    public void setZona(String zona) {
+    public void setEspecialidad(Especialidades especialidad) {
+        this.especialidad = especialidad;
+    }
+
+    public void setZona(Zonas zona) {
         this.zona = zona;
     }
 

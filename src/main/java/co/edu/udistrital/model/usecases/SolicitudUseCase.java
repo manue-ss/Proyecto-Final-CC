@@ -26,28 +26,18 @@ public class SolicitudUseCase {
         this.clienteDAO = clienteDAO;
     }
 
-    public Solicitud registrarSolicitud(String identificadorCliente, String descripcion, TipoSolicitud tipo, NivelCriticidad criticidad) {
+    public Solicitud registrarSolicitud(String identificadorCliente, String descripcion, TipoSolicitud tipo, NivelCriticidad criticidad, Zonas zona) {
         Cliente cliente = clienteDAO.findByIdentificador(identificadorCliente);
-
         if (cliente == null) {
-            throw new IllegalArgumentException("El cliente con identificador " + identificadorCliente + " no se encuentra registrado.");
+            throw new IllegalArgumentException("Cliente no registrado.");
         }
 
         int nuevoId = solicitudDAO.getFullHistory().size() + 1;
-
-        Solicitud nuevaSolicitud = new Solicitud(
-                nuevoId,
-                cliente.getId(),
-                null,
-                0,
-                descripcion,
-                tipo,
-                criticidad,
-                EstadoSolicitud.PENDIENTE
-        );
-
-        solicitudDAO.registerRequest(nuevaSolicitud);
-        return nuevaSolicitud;
+        Solicitud nueva = new Solicitud(nuevoId, cliente.getId(), 
+                null, 0, descripcion, tipo, criticidad, 
+                EstadoSolicitud.PENDIENTE, zona);
+        solicitudDAO.registerRequest(nueva);
+        return nueva;
     }
 
     public void despacharServicio(int idTecnico, String uuidUnidad, boolean requiereKit) {
@@ -166,11 +156,19 @@ public class SolicitudUseCase {
         return solicitudDAO.getFullHistory();
     }
 
-    public DoubleLinkedList<Tecnico> obtenerTecnicosDisponibles() {
-        return tecnicoDAO.getAvailable();
+    public DoubleLinkedList<Tecnico> obtenerTecnicosDisponibles(Zonas zonaSolicitud) {
+        DoubleLinkedList<Tecnico> filtrados = new DoubleLinkedList<>();
+        for (Tecnico t : tecnicoDAO.getAvailable()) {
+            if (t.getZona() == zonaSolicitud) filtrados.addLast(t);
+        }
+        return filtrados;
     }
 
-    public DoubleLinkedList<UnidadServicio> obtenerUnidadesDisponibles() {
-        return unidadDAO.getByState(EstadoUnidad.DISPONIBLE);
+    public DoubleLinkedList<UnidadServicio> obtenerUnidadesDisponibles(Zonas zonaSolicitud) {
+        DoubleLinkedList<UnidadServicio> filtrados = new DoubleLinkedList<>();
+        for (UnidadServicio u : unidadDAO.getByState(EstadoUnidad.DISPONIBLE)) {
+            if (u.getZona() == zonaSolicitud) filtrados.addLast(u);
+        }
+        return filtrados;
     }
 }

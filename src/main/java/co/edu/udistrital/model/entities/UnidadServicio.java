@@ -2,6 +2,7 @@ package co.edu.udistrital.model.entities;
 
 import co.edu.udistrital.model.enums.TipoUnidad;
 import co.edu.udistrital.model.enums.EstadoUnidad;
+import co.edu.udistrital.model.enums.Zonas;
 import java.util.UUID;
 import java.io.Serializable;
 
@@ -12,13 +13,13 @@ public class UnidadServicio implements Serializable {
     private String uuid;
     private TipoUnidad tipo;
     private EstadoUnidad estado;
-    private String zona;
+    private Zonas zona;
     private boolean disponibilidad;
 
     public UnidadServicio() {
     }
 
-    public UnidadServicio(TipoUnidad tipo, EstadoUnidad estado, String zona, boolean disponibilidad) {
+    public UnidadServicio(TipoUnidad tipo, EstadoUnidad estado, Zonas zona, boolean disponibilidad) {
         this.uuid = UUID.randomUUID().toString();
         this.tipo = tipo;
         this.estado = estado;
@@ -36,10 +37,6 @@ public class UnidadServicio implements Serializable {
 
     public EstadoUnidad getEstado() {
         return estado;
-    }
-
-    public String getZona() {
-        return zona;
     }
 
     public boolean isDisponibilidad() {
@@ -60,12 +57,16 @@ public class UnidadServicio implements Serializable {
         this.disponibilidad = (this.estado == EstadoUnidad.DISPONIBLE);
     }
 
-    public void setZona(String zona) {
-        this.zona = zona;
-    }
-
     public void setDisponibilidad(boolean disponibilidad) {
         this.disponibilidad = disponibilidad;
+    }
+
+    public Zonas getZona() {
+        return zona;
+    }
+
+    public void setZona(Zonas zona) {
+        this.zona = zona;
     }
 
 }
