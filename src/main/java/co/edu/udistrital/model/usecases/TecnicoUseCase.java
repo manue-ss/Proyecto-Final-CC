@@ -44,7 +44,7 @@ public class TecnicoUseCase {
             dao.update();
 
             String idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
-            Operacion opMantenimiento = new Operacion(idOperacion, TipoOperacion.MANTENIMIENTO_RECURSO,
+            Operacion opMantenimiento = new Operacion(idOperacion, TipoOperacion.TECNICO_A_DESCANSO,
                     "Técnico enviado a descanso: " + id, null, id, null, null);
             operacionDAO.registerOperation(opMantenimiento);
         }
@@ -60,6 +60,11 @@ public class TecnicoUseCase {
 
         tecnico.setEstado(EstadoTecnico.DISPONIBLE);
         dao.update();
+        
+        String idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
+        Operacion opRetorno = new Operacion(idOperacion, TipoOperacion.TECNICO_RETORNA,
+                "Técnico retornó de descanso: " + id, null, id, null, null);
+        operacionDAO.registerOperation(opRetorno);
     }
 
     public void despedirTecnico(int id) {

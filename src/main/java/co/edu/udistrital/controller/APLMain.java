@@ -25,7 +25,7 @@ public class APLMain extends Application {
 
         AdministracionUseCase administracionUseCase = new AdministracionUseCase(solicitudDAO, tecnicoDAO, unidadServicioDAO, kitDAO, operacionDAO);
         ClienteUseCase clienteUseCase = new ClienteUseCase(clienteDAO);
-        KitUseCase kitUseCase = new KitUseCase(kitDAO);
+        KitUseCase kitUseCase = new KitUseCase(kitDAO, operacionDAO);
         SolicitudUseCase solicitudUseCase = new SolicitudUseCase(solicitudDAO, tecnicoDAO, unidadServicioDAO, kitDAO, operacionDAO, clienteDAO);
         TecnicoUseCase tecnicoUseCase = new TecnicoUseCase(tecnicoDAO, operacionDAO);
         UnidadUseCase unidadUseCase = new UnidadUseCase(unidadServicioDAO, operacionDAO);

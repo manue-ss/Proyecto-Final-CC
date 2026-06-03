@@ -96,7 +96,7 @@ public class SolicitudUseCase {
 
         String idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
         Operacion opDespacho = new Operacion(
-                idOperacion, TipoOperacion.ASIGNACION_SERVICIO,
+                idOperacion, TipoOperacion.DESPACHO_SOLICITUD,
                 "Asignación Atómica: Solicitud " + solicitud.getId(),
                 solicitud.getId(), tecnico.getId(), unidad.getUuid(), idKit
         );
@@ -136,7 +136,7 @@ public class SolicitudUseCase {
 
         String idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
         Operacion opFin = new Operacion(
-                idOperacion, TipoOperacion.CIERRE_SERVICIO,
+                idOperacion, TipoOperacion.FINALIZACION_SOLICITUD,
                 "Cierre Atómico: Solicitud " + solicitud.getId() + " finalizada.",
                 solicitud.getId(), solicitud.getIdTecnico(),
                 solicitud.getUuid(), solicitud.getIdKit()
@@ -147,7 +147,7 @@ public class SolicitudUseCase {
             String idOperacionMantenimiento = "OP-" + (operacionDAO.getHistory().size() + 1);
             Operacion opMantenimiento = new Operacion(
                     idOperacionMantenimiento,
-                    TipoOperacion.MANTENIMIENTO_RECURSO,
+                    TipoOperacion.KIT_A_REVISION,
                     "Kit enviado a mantenimiento: " + solicitud.getIdKit(),
                     null,
                     null,

@@ -37,7 +37,7 @@ public class UnidadUseCase {
             dao.update();
 
             String idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
-            Operacion opMantenimiento = new Operacion(idOperacion, TipoOperacion.MANTENIMIENTO_RECURSO,
+            Operacion opMantenimiento = new Operacion(idOperacion, TipoOperacion.UNIDAD_A_MANTENIMIENTO,
                     "Unidad enviada a mantenimiento: " + uuid, null, null, uuid, null);
             operacionDAO.registerOperation(opMantenimiento);
         }
@@ -55,6 +55,11 @@ public class UnidadUseCase {
 
         us.setEstado(EstadoUnidad.DISPONIBLE);
         dao.update();
+        
+        String idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
+        Operacion opLibera = new Operacion(idOperacion, TipoOperacion.UNIDAD_LIBERADA,
+                "Unidad liberada de mantenimiento: " + uuid, null, null, uuid, null);
+        operacionDAO.registerOperation(opLibera);
     }
 
     public void darDeBajaUnidad(String uuid) {

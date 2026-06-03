@@ -37,14 +37,15 @@ public class AdministracionUseCase {
         boolean exito = false;
 
         switch (op.getTipo()) {
-            case ASIGNACION_SERVICIO ->
-                exito = deshacerAsignacion(op);
-            case CIERRE_SERVICIO ->
-                exito = deshacerCierre(op);
-            case MANTENIMIENTO_RECURSO ->
-                exito = deshacerMantenimiento(op);
-            default ->
-                throw new IllegalStateException("Tipo de operación no reconocido en el historial.");
+            case DESPACHO_SOLICITUD -> exito = deshacerAsignacion(op);
+            case FINALIZACION_SOLICITUD -> exito = deshacerCierre(op);
+            case UNIDAD_A_MANTENIMIENTO -> exito = deshacerUnidadMantenimiento(op, true);
+            case UNIDAD_LIBERADA -> exito = deshacerUnidadMantenimiento(op, false);
+            case TECNICO_A_DESCANSO -> exito = deshacerTecnicoDescanso(op, true);
+            case TECNICO_RETORNA -> exito = deshacerTecnicoDescanso(op, false);
+            case KIT_A_REVISION -> exito = deshacerKitRevision(op, true);
+            case KIT_REPARADO -> exito = deshacerKitRevision(op, false);
+            default -> throw new IllegalStateException("Tipo de operación no reconocido en el historial.");
         }
 
         if (!exito) {
@@ -52,7 +53,7 @@ public class AdministracionUseCase {
         }
     }
 
-    public boolean deshacerAsignacion(Operacion op) {
+    private boolean deshacerAsignacion(Operacion op) {
         Solicitud solicitud = solicitudDAO.getById(op.getIdSolicitud());
         Tecnico tecnico = tecnicoDAO.findById(op.getIdTecnico());
         UnidadServicio unidad = unidadDAO.findByUuid(op.getUuidUnidad());
@@ -76,7 +77,7 @@ public class AdministracionUseCase {
             unidadDAO.update();
         }
 
-        if (op.getIdKit() != null) {
+        if (op.getIdKit() != null && op.getIdKit() != 0) {
             Kit kit = kitDAO.getById(op.getIdKit());
             if (kit != null) {
                 kitDAO.returnFromService(kit, false);
@@ -86,7 +87,7 @@ public class AdministracionUseCase {
         return true;
     }
 
-    public boolean deshacerCierre(Operacion op) {
+    private boolean deshacerCierre(Operacion op) {
         Solicitud solicitud = solicitudDAO.getById(op.getIdSolicitud());
         Tecnico tecnico = tecnicoDAO.findById(op.getIdTecnico());
         UnidadServicio unidad = unidadDAO.findByUuid(op.getUuidUnidad());
@@ -107,7 +108,7 @@ public class AdministracionUseCase {
             unidadDAO.update();
         }
 
-        if (op.getIdKit() != null) {
+        if (op.getIdKit() != null && op.getIdKit() != 0) {
             Kit kit = kitDAO.getById(op.getIdKit());
             if (kit != null) {
                 kit.setEstado(EstadoKit.ASIGNADO);
@@ -118,33 +119,35 @@ public class AdministracionUseCase {
         return true;
     }
 
-    public boolean deshacerMantenimiento(Operacion op) {
-        if (op.getUuidUnidad() != null) {
-            UnidadServicio unidad = unidadDAO.findByUuid(op.getUuidUnidad());
-            if (unidad != null) {
-                if (unidad.getEstado() == EstadoUnidad.EN_MANTENIMIENTO) {
-                    unidad.setEstado(EstadoUnidad.DISPONIBLE);
-                    unidadDAO.update();
-                    return true;
-                }
-                return false;
+    private boolean deshacerUnidadMantenimiento(Operacion op, boolean eraIngreso) {
+        UnidadServicio unidad = unidadDAO.findByUuid(op.getUuidUnidad());
+        if (unidad != null) {
+            unidad.setEstado(eraIngreso ? EstadoUnidad.DISPONIBLE : EstadoUnidad.EN_MANTENIMIENTO);
+            unidadDAO.update();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean deshacerTecnicoDescanso(Operacion op, boolean eraIngreso) {
+        Tecnico tecnico = tecnicoDAO.findById(op.getIdTecnico());
+        if (tecnico != null) {
+            tecnico.setEstado(eraIngreso ? EstadoTecnico.DISPONIBLE : EstadoTecnico.EN_DESCANSO);
+            tecnicoDAO.update();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean deshacerKitRevision(Operacion op, boolean eraIngreso) {
+        Kit kit = kitDAO.getById(op.getIdKit());
+        if (kit != null) {
+            if (eraIngreso) {
+                kitDAO.finishMaintenance(kit); 
+            } else {
+                kitDAO.returnFromService(kit, true); 
             }
-        } else if (op.getIdTecnico() != null) {
-            Tecnico tecnico = tecnicoDAO.findById(op.getIdTecnico());
-            if (tecnico != null) {
-                if (tecnico.getEstado() == EstadoTecnico.EN_DESCANSO) {
-                    tecnico.setEstado(EstadoTecnico.DISPONIBLE);
-                    tecnicoDAO.update();
-                    return true;
-                }
-                return false;
-            }
-        } else if (op.getIdKit() != null) {
-            Kit kit = kitDAO.getById(op.getIdKit());
-            if (kit != null) {
-                kitDAO.finishMaintenance(kit);
-                return true;
-            }
+            return true;
         }
         return false;
     }
