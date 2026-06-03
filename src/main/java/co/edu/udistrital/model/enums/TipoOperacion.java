@@ -1,0 +1,12 @@
+package co.edu.udistrital.model.enums;
+
+public enum TipoOperacion {
+    DESPACHO_SOLICITUD,
+    FINALIZACION_SOLICITUD,
+    UNIDAD_A_MANTENIMIENTO,
+    UNIDAD_LIBERADA,
+    TECNICO_A_DESCANSO,
+    TECNICO_RETORNA,
+    KIT_A_REVISION,
+    KIT_REPARADO
+}
