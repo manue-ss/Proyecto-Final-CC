@@ -5,44 +5,48 @@
 <?import javafx.scene.text.Font?>
 
 <VBox prefHeight="600.0" prefWidth="900.0" spacing="20.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udistrital.controller.TecnicosController">
-   <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
-   <children>
-      <Label text="3. Personal Técnico Operativo" textFill="#2c3e50">
-         <font><Font name="System Bold" size="24.0" /></font>
-      </Label>
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <children>
+        <Label text="3. Personal Técnico Operativo" textFill="#2c3e50">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+        </Label>
 
-      <HBox spacing="15.0" alignment="CENTER_LEFT" style="-fx-background-color: #ecf0f1; -fx-padding: 15px; -fx-background-radius: 5px;">
-         <children>
-            <VBox spacing="5.0">
-               <Label text="Especialidad:" />
-               <TextField fx:id="txtEspecialidad" prefWidth="200.0" />
-            </VBox>
-            <VBox spacing="5.0">
-               <Label text="Zona Asignada:" />
-               <TextField fx:id="txtZona" prefWidth="200.0" />
-            </VBox>
-            <VBox alignment="BOTTOM_LEFT">
-               <Button text="Registrar Técnico" onAction="#registrarTecnico" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;"/>
-            </VBox>
-         </children>
-      </HBox>
+        <HBox spacing="15.0" alignment="CENTER_LEFT" style="-fx-background-color: #ecf0f1; -fx-padding: 15px; -fx-background-radius: 5px;">
+            <children>
+                <VBox spacing="5.0">
+                    <Label text="Especialidad:" />
+                    <ComboBox fx:id="cmbEspecialidad" prefWidth="200.0" />
+                </VBox>
+                <VBox spacing="5.0">
+                    <Label text="Zona Asignada:" />
+                    <ComboBox fx:id="cmbZona" prefWidth="200.0" />
+                </VBox>
+                <VBox alignment="BOTTOM_LEFT">
+                    <Button text="Registrar Técnico" onAction="#registrarTecnico" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                </VBox>
+            </children>
+        </HBox>
 
-      <TableView fx:id="tablaTecnicos" prefHeight="400.0" prefWidth="860.0" VBox.vgrow="ALWAYS">
-        <columns>
-          <TableColumn fx:id="colId" prefWidth="50.0" text="ID" />
-          <TableColumn fx:id="colEspecialidad" prefWidth="200.0" text="Especialidad" />
-          <TableColumn fx:id="colZona" prefWidth="150.0" text="Zona" />
-          <TableColumn fx:id="colEstado" prefWidth="150.0" text="Estado" />
-          <TableColumn fx:id="colDisponibilidad" prefWidth="150.0" text="¿Disponible?" />
-        </columns>
-      </TableView>
+        <TableView fx:id="tablaTecnicos" prefHeight="400.0" prefWidth="860.0" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colId" prefWidth="50.0" text="ID" />
+                <TableColumn fx:id="colEspecialidad" prefWidth="200.0" text="Especialidad" />
+                <TableColumn fx:id="colZona" prefWidth="150.0" text="Zona" />
+                <TableColumn fx:id="colEstado" prefWidth="150.0" text="Estado" />
+                <TableColumn fx:id="colDisponibilidad" prefWidth="150.0" text="¿Disponible?" />
+            </columns>
+        </TableView>
 
-      <HBox spacing="10.0" alignment="CENTER_RIGHT">
-         <children>
-            <Button text="Mandar a Descanso" onAction="#enviarDescanso" style="-fx-background-color: #f39c12; -fx-text-fill: white;"/>
-            <Button text="Retornar de Descanso" onAction="#retornarDescanso" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
-            <Button text="Dar de Baja / Despedir" onAction="#despedir" style="-fx-background-color: #c0392b; -fx-text-fill: white;"/>
-         </children>
-      </HBox>
-   </children>
+        <HBox spacing="10.0" alignment="CENTER_RIGHT">
+            <children>
+                <Button text="Mandar a Descanso" onAction="#enviarDescanso" style="-fx-background-color: #f39c12; -fx-text-fill: white;"/>
+                <Button text="Retornar de Descanso" onAction="#retornarDescanso" style="-fx-background-color: #27ae60; -fx-text-fill: white;"/>
+                <Button text="Dar de Baja / Despedir" onAction="#despedir" style="-fx-background-color: #c0392b; -fx-text-fill: white;"/>
+            </children>
+        </HBox>
+    </children>
 </VBox>

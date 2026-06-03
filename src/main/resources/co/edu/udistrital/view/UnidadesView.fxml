@@ -19,7 +19,7 @@
             <children>
                 <VBox spacing="5.0">
                     <Label text="Zona de Operación:" />
-                    <TextField fx:id="txtZona" prefWidth="200.0" />
+                    <ComboBox fx:id="cmbZona" prefWidth="200.0" />
                 </VBox>
                 <VBox spacing="5.0">
                     <Label text="Tipo de Unidad:" />

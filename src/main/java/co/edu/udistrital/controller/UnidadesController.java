@@ -2,6 +2,7 @@ package co.edu.udistrital.controller;
 
 import co.edu.udistrital.model.entities.UnidadServicio;
 import co.edu.udistrital.model.enums.TipoUnidad;
+import co.edu.udistrital.model.enums.Zonas;
 import co.edu.udistrital.model.usecases.UnidadUseCase;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,21 +14,31 @@ public class UnidadesController {
 
     private final UnidadUseCase useCase;
 
-    @FXML private TextField txtZona;
-    @FXML private ComboBox<TipoUnidad> cmbTipoUnidad;
-    @FXML private TableView<UnidadServicio> tablaUnidades;
-    @FXML private TableColumn<UnidadServicio, String> colUuid;
-    @FXML private TableColumn<UnidadServicio, String> colTipo;
-    @FXML private TableColumn<UnidadServicio, String> colZona;
-    @FXML private TableColumn<UnidadServicio, String> colEstado;
-    @FXML private TableColumn<UnidadServicio, String> colDisponibilidad;
+    @FXML
+    private ComboBox<Zonas> cmbZona;
+    @FXML
+    private ComboBox<TipoUnidad> cmbTipoUnidad;
+    @FXML
+    private TableView<UnidadServicio> tablaUnidades;
+    @FXML
+    private TableColumn<UnidadServicio, String> colUuid;
+    @FXML
+    private TableColumn<UnidadServicio, String> colTipo;
+    @FXML
+    private TableColumn<UnidadServicio, String> colZona;
+    @FXML
+    private TableColumn<UnidadServicio, String> colEstado;
+    @FXML
+    private TableColumn<UnidadServicio, String> colDisponibilidad;
 
     public UnidadesController(UnidadUseCase useCase) {
         this.useCase = useCase;
     }
 
-    @FXML public void initialize() {
+    @FXML
+    public void initialize() {
         cmbTipoUnidad.setItems(FXCollections.observableArrayList(TipoUnidad.values()));
+        cmbZona.setItems(FXCollections.observableArrayList(Zonas.values()));
         colUuid.setCellValueFactory(new PropertyValueFactory<>("uuid"));
         colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         colZona.setCellValueFactory(new PropertyValueFactory<>("zona"));
@@ -38,18 +49,20 @@ public class UnidadesController {
         cargarTabla();
     }
 
-    @FXML private void registrarUnidad() {
-        if (txtZona.getText().isEmpty() || cmbTipoUnidad.getValue() == null) {
+    @FXML
+    private void registrarUnidad() {
+        if (cmbZona.getValue() == null || cmbTipoUnidad.getValue() == null) {
             return;
         }
-        useCase.registrarNuevaUnidad(cmbTipoUnidad.getValue().name(), txtZona.getText());
-        txtZona.clear();
+        useCase.registrarNuevaUnidad(cmbTipoUnidad.getValue(), cmbZona.getValue());
+        cmbZona.setValue(null);
         cmbTipoUnidad.setValue(null);
         cargarTabla();
         EventoGlobal.notificarCambio();
     }
 
-    @FXML private void enviarMantenimiento() {
+    @FXML
+    private void enviarMantenimiento() {
         UnidadServicio u = tablaUnidades.getSelectionModel().getSelectedItem();
         if (u != null) {
             useCase.enviarUnidadAMantenimiento(u.getUuid());
@@ -58,7 +71,8 @@ public class UnidadesController {
         }
     }
 
-    @FXML private void liberarMantenimiento() {
+    @FXML
+    private void liberarMantenimiento() {
         UnidadServicio u = tablaUnidades.getSelectionModel().getSelectedItem();
         if (u != null) {
             useCase.liberarUnidadDeMantenimiento(u.getUuid());
@@ -67,7 +81,8 @@ public class UnidadesController {
         }
     }
 
-    @FXML private void darDeBaja() {
+    @FXML
+    private void darDeBaja() {
         UnidadServicio u = tablaUnidades.getSelectionModel().getSelectedItem();
         if (u != null) {
             useCase.darDeBajaUnidad(u.getUuid());

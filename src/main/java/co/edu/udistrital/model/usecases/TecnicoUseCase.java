@@ -4,8 +4,10 @@ import co.edu.udistrital.model.daos.OperacionDAO;
 import co.edu.udistrital.model.daos.TecnicoDAO;
 import co.edu.udistrital.model.entities.Operacion;
 import co.edu.udistrital.model.entities.Tecnico;
+import co.edu.udistrital.model.enums.Especialidades;
 import co.edu.udistrital.model.enums.EstadoTecnico;
 import co.edu.udistrital.model.enums.TipoOperacion;
+import co.edu.udistrital.model.enums.Zonas;
 
 public class TecnicoUseCase {
 
@@ -17,7 +19,7 @@ public class TecnicoUseCase {
         this.operacionDAO = operacionDAO;
     }
 
-    public Tecnico registrarNuevoTecnico(String especialidad, String zona) {
+    public Tecnico registrarNuevoTecnico(Especialidades especialidad, Zonas zona) {
         int nuevoId = 1;
         while (dao.findById(nuevoId) != null) {
             nuevoId++;
@@ -52,7 +54,9 @@ public class TecnicoUseCase {
 
     public void retornarTecnicoDeDescanso(int id) {
         Tecnico tecnico = dao.findById(id);
-        if (tecnico == null) throw new IllegalArgumentException("El técnico especificado no existe en el sistema.");
+        if (tecnico == null) {
+            throw new IllegalArgumentException("El técnico especificado no existe en el sistema.");
+        }
 
         if (tecnico.getEstado() != EstadoTecnico.EN_DESCANSO) {
             throw new IllegalStateException("El técnico no puede retornar de descanso porque su estado actual es: " + tecnico.getEstado());
@@ -60,7 +64,7 @@ public class TecnicoUseCase {
 
         tecnico.setEstado(EstadoTecnico.DISPONIBLE);
         dao.update();
-        
+
         String idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
         Operacion opRetorno = new Operacion(idOperacion, TipoOperacion.TECNICO_RETORNA,
                 "Técnico retornó de descanso: " + id, null, id, null, null);
@@ -69,7 +73,9 @@ public class TecnicoUseCase {
 
     public void despedirTecnico(int id) {
         Tecnico tecnico = dao.findById(id);
-        if (tecnico == null) throw new IllegalArgumentException("El técnico especificado no existe en el sistema.");
+        if (tecnico == null) {
+            throw new IllegalArgumentException("El técnico especificado no existe en el sistema.");
+        }
 
         if (tecnico.getEstado() == EstadoTecnico.ASIGNADO) {
             throw new IllegalStateException("No se puede despedir al técnico porque actualmente está ASIGNADO a un servicio.");
