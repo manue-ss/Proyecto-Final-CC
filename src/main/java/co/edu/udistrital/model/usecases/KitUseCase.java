@@ -5,6 +5,7 @@ import co.edu.udistrital.model.entities.Kit;
 import co.edu.udistrital.model.enums.EstadoKit;
 import co.edu.udistrital.model.enums.TipoKit;
 import co.edu.udistrital.model.structures.SimpleLinkedList;
+import co.edu.udistrital.model.structures.Stack;
 
 public class KitUseCase {
 
@@ -38,13 +39,11 @@ public class KitUseCase {
         return dao.getAll();
     }
 
-    public SimpleLinkedList<Kit> obtenerPorEstado(EstadoKit estado) {
-        SimpleLinkedList<Kit> filtrados = new SimpleLinkedList<>();
-        for (Kit k : dao.getAll()) {
-            if (k.getEstado() == estado) {
-                filtrados.addLast(k);
-            }
-        }
-        return filtrados;
+    public Stack<Kit> obtenerPilaDisponibles() {
+        return dao.getReadyStack();
+    }
+
+    public Stack<Kit> obtenerPilaMantenimiento() {
+        return dao.getMaintenanceStack();
     }
 }

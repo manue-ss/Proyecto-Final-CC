@@ -4,6 +4,7 @@ import co.edu.udistrital.model.enums.TipoSolicitud;
 import co.edu.udistrital.model.enums.NivelCriticidad;
 import co.edu.udistrital.model.enums.EstadoSolicitud;
 import java.io.Serializable;
+import java.time.LocalDate;
 
 public class Solicitud implements Comparable<Solicitud>, Serializable {
 
@@ -18,6 +19,7 @@ public class Solicitud implements Comparable<Solicitud>, Serializable {
     private TipoSolicitud tipo;
     private NivelCriticidad criticidad;
     private EstadoSolicitud estado;
+    private LocalDate fechaResolucion;
 
     public Solicitud() {
     }
@@ -105,6 +107,14 @@ public class Solicitud implements Comparable<Solicitud>, Serializable {
         this.idKit = idKit;
     }
 
+    public LocalDate getFechaResolucion() {
+        return fechaResolucion;
+    }
+
+    public void setFechaResolucion(LocalDate fechaResolucion) {
+        this.fechaResolucion = fechaResolucion;
+    }
+
     @Override
     public int compareTo(Solicitud otraSolicitud) {
         int comparacionCriticidad = this.criticidad.compareTo(otraSolicitud.getCriticidad());
@@ -113,5 +123,4 @@ public class Solicitud implements Comparable<Solicitud>, Serializable {
         }
         return comparacionCriticidad;
     }
-
 }

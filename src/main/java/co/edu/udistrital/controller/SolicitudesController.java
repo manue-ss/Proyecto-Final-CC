@@ -14,36 +14,57 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import java.time.LocalDate;
 
 public class SolicitudesController {
 
     private final SolicitudUseCase useCase;
 
-    @FXML private TextField txtIdCliente;
-    @FXML private ComboBox<TipoSolicitud> cmbTipo;
-    @FXML private ComboBox<NivelCriticidad> cmbCriticidad;
-    @FXML private TextField txtDescripcion;
+    @FXML
+    private TextField txtIdCliente;
+    @FXML
+    private ComboBox<TipoSolicitud> cmbTipo;
+    @FXML
+    private ComboBox<NivelCriticidad> cmbCriticidad;
+    @FXML
+    private TextField txtDescripcion;
 
-    @FXML private TableView<Solicitud> tablaSolicitudes;
-    @FXML private TableColumn<Solicitud, Integer> colId;
-    @FXML private TableColumn<Solicitud, String> colTipo;
-    @FXML private TableColumn<Solicitud, String> colCriticidad;
-    @FXML private TableColumn<Solicitud, String> colEstado;
-    @FXML private TableColumn<Solicitud, String> colTecnico;
-    @FXML private TableColumn<Solicitud, String> colUnidad;
-    @FXML private TableColumn<Solicitud, String> colKit;
-    @FXML private TableColumn<Solicitud, String> colDescripcion;
+    @FXML
+    private TableView<Solicitud> tablaSolicitudes;
+    @FXML
+    private TableColumn<Solicitud, Integer> colId;
+    @FXML
+    private TableColumn<Solicitud, String> colTipo;
+    @FXML
+    private TableColumn<Solicitud, String> colCriticidad;
+    @FXML
+    private TableColumn<Solicitud, String> colEstado;
+    @FXML
+    private TableColumn<Solicitud, String> colTecnico;
+    @FXML
+    private TableColumn<Solicitud, String> colUnidad;
+    @FXML
+    private TableColumn<Solicitud, String> colKit;
+    @FXML
+    private TableColumn<Solicitud, String> colFecha;
+    @FXML
+    private TableColumn<Solicitud, String> colDescripcion;
 
-    @FXML private ComboBox<Integer> cmbTecnicosDisponibles;
-    @FXML private ComboBox<String> cmbUnidadesDisponibles;
-    @FXML private CheckBox chkRequiereKit;
-    @FXML private CheckBox chkKitDanado;
+    @FXML
+    private ComboBox<Integer> cmbTecnicosDisponibles;
+    @FXML
+    private ComboBox<String> cmbUnidadesDisponibles;
+    @FXML
+    private CheckBox chkRequiereKit;
+    @FXML
+    private CheckBox chkKitDanado;
 
     public SolicitudesController(SolicitudUseCase useCase) {
         this.useCase = useCase;
     }
 
-    @FXML public void initialize() {
+    @FXML
+    public void initialize() {
         cmbTipo.setItems(FXCollections.observableArrayList(TipoSolicitud.values()));
         cmbCriticidad.setItems(FXCollections.observableArrayList(NivelCriticidad.values()));
 
@@ -62,27 +83,33 @@ public class SolicitudesController {
             String uuid = cellData.getValue().getUuid();
             return new SimpleStringProperty(uuid == null || uuid.trim().isEmpty() ? "N/A" : uuid);
         });
-        
+
         colKit.setCellValueFactory(cellData -> {
             int idKit = cellData.getValue().getIdKit();
             return new SimpleStringProperty(idKit == 0 ? "No lleva" : "Kit #" + idKit);
         });
 
+        colFecha.setCellValueFactory(cellData -> {
+            LocalDate fecha = cellData.getValue().getFechaResolucion();
+            return new SimpleStringProperty(fecha == null ? "Pendiente" : fecha.toString());
+        });
+
         actualizarDatosVisuales();
-        
+
         tablaSolicitudes.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
             if (newSel != null && newSel.getEstado() == co.edu.udistrital.model.enums.EstadoSolicitud.PENDIENTE) {
                 Solicitud prox = useCase.obtenerProximaSolicitud();
                 if (prox != null && newSel.getId() != prox.getId()) {
-                    javafx.application.Platform.runLater(() -> 
-                        tablaSolicitudes.getSelectionModel().select(prox)
+                    javafx.application.Platform.runLater(()
+                            -> tablaSolicitudes.getSelectionModel().select(prox)
                     );
                 }
             }
         });
     }
 
-    @FXML private void registrarSolicitud() {
+    @FXML
+    private void registrarSolicitud() {
         if (txtIdCliente.getText().trim().isEmpty() || txtDescripcion.getText().trim().isEmpty()
                 || cmbTipo.getValue() == null || cmbCriticidad.getValue() == null) {
             mostrarAlerta(Alert.AlertType.WARNING, "Debe llenar todos los campos del formulario.");
@@ -98,14 +125,15 @@ public class SolicitudesController {
             cmbTipo.setValue(null);
             cmbCriticidad.setValue(null);
             actualizarDatosVisuales();
-            EventoGlobal.notificarCambio();
+            // EventoGlobal.notificarCambio(); 
         }
         catch (IllegalArgumentException e) {
             mostrarAlerta(Alert.AlertType.ERROR, e.getMessage());
         }
     }
 
-    @FXML private void despacharSolicitud() {
+    @FXML
+    private void despacharSolicitud() {
         Integer idTecnico = cmbTecnicosDisponibles.getValue();
         String uuidUnidad = cmbUnidadesDisponibles.getValue();
 
@@ -118,21 +146,22 @@ public class SolicitudesController {
             useCase.despacharServicio(idTecnico, uuidUnidad, chkRequiereKit.isSelected());
             chkRequiereKit.setSelected(false);
             actualizarDatosVisuales();
-            EventoGlobal.notificarCambio();
+            // EventoGlobal.notificarCambio();
         }
         catch (Exception e) {
             mostrarAlerta(Alert.AlertType.ERROR, e.getMessage());
         }
     }
 
-    @FXML private void finalizarSolicitud() {
+    @FXML
+    private void finalizarSolicitud() {
         Solicitud s = tablaSolicitudes.getSelectionModel().getSelectedItem();
         if (s != null) {
             try {
                 useCase.finalizarSolicitudAtendida(s.getId(), chkKitDanado.isSelected());
                 chkKitDanado.setSelected(false);
                 actualizarDatosVisuales();
-                EventoGlobal.notificarCambio();
+                // EventoGlobal.notificarCambio();
             }
             catch (Exception e) {
                 mostrarAlerta(Alert.AlertType.ERROR, e.getMessage());
@@ -170,7 +199,7 @@ public class SolicitudesController {
         }
         cmbUnidadesDisponibles.setItems(listaUnidades);
         tablaSolicitudes.refresh();
-        
+
         Solicitud proxima = useCase.obtenerProximaSolicitud();
         if (proxima != null) {
             tablaSolicitudes.getSelectionModel().select(proxima);

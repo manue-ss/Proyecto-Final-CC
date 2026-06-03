@@ -9,7 +9,6 @@ import co.edu.udistrital.model.structures.Stack;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class AdministracionUseCase {
 
@@ -32,8 +31,7 @@ public class AdministracionUseCase {
         Operacion op = operacionDAO.popLastOperation();
 
         if (op == null) {
-            System.out.println("El historial de operaciones está vacío. No hay nada que deshacer.");
-            return;
+            throw new IllegalStateException("El historial de operaciones está vacío. No hay nada que deshacer.");
         }
 
         boolean exito = false;
@@ -46,18 +44,15 @@ public class AdministracionUseCase {
             case MANTENIMIENTO_RECURSO ->
                 exito = deshacerMantenimiento(op);
             default ->
-                System.out.println("Tipo de operación no reconocido.");
+                throw new IllegalStateException("Tipo de operación no reconocido en el historial.");
         }
 
-        if (exito) {
-            System.out.println("ÉXITO: Se ha revertido -> " + op.getDescripcionUI());
-        } else {
-            System.out.println("ERROR: No se pudo revertir la operación.");
+        if (!exito) {
+            throw new IllegalStateException("No se pudo revertir la operación seleccionada debido a un conflicto de estados.");
         }
     }
 
     public boolean deshacerAsignacion(Operacion op) {
-
         Solicitud solicitud = solicitudDAO.getById(op.getIdSolicitud());
         Tecnico tecnico = tecnicoDAO.findById(op.getIdTecnico());
         UnidadServicio unidad = unidadDAO.findByUuid(op.getUuidUnidad());
@@ -68,7 +63,6 @@ public class AdministracionUseCase {
             solicitud.setUuid(null);
             solicitud.setIdKit(0);
             solicitudDAO.update();
-
             solicitudDAO.sortPendingRequests();
         }
 
@@ -76,6 +70,7 @@ public class AdministracionUseCase {
             tecnico.setEstado(EstadoTecnico.DISPONIBLE);
             tecnicoDAO.update();
         }
+
         if (unidad != null) {
             unidad.setEstado(EstadoUnidad.DISPONIBLE);
             unidadDAO.update();
@@ -84,7 +79,6 @@ public class AdministracionUseCase {
         if (op.getIdKit() != null) {
             Kit kit = kitDAO.getById(op.getIdKit());
             if (kit != null) {
-
                 kitDAO.returnFromService(kit, false);
             }
         }
@@ -93,13 +87,13 @@ public class AdministracionUseCase {
     }
 
     public boolean deshacerCierre(Operacion op) {
-
         Solicitud solicitud = solicitudDAO.getById(op.getIdSolicitud());
         Tecnico tecnico = tecnicoDAO.findById(op.getIdTecnico());
         UnidadServicio unidad = unidadDAO.findByUuid(op.getUuidUnidad());
 
         if (solicitud != null) {
             solicitud.setEstado(EstadoSolicitud.EN_EJECUCION);
+            solicitud.setFechaResolucion(null);
             solicitudDAO.update();
         }
 
@@ -132,10 +126,8 @@ public class AdministracionUseCase {
                     unidad.setEstado(EstadoUnidad.DISPONIBLE);
                     unidadDAO.update();
                     return true;
-                } else {
-                    System.out.println("No se puede revertir el mantenimiento: la unidad actualmente está " + unidad.getEstado());
-                    return false;
                 }
+                return false;
             }
         } else if (op.getIdTecnico() != null) {
             Tecnico tecnico = tecnicoDAO.findById(op.getIdTecnico());
@@ -144,10 +136,8 @@ public class AdministracionUseCase {
                     tecnico.setEstado(EstadoTecnico.DISPONIBLE);
                     tecnicoDAO.update();
                     return true;
-                } else {
-                    System.out.println("No se puede revertir el descanso: el técnico actualmente está " + tecnico.getEstado());
-                    return false;
                 }
+                return false;
             }
         } else if (op.getIdKit() != null) {
             Kit kit = kitDAO.getById(op.getIdKit());
@@ -159,41 +149,39 @@ public class AdministracionUseCase {
         return false;
     }
 
-    public void generarReporteDiarioCSV(String rutaAbsoluta) {
+    public void generarReporteDiarioCSV(String rutaAbsoluta) throws IOException {
         SimpleLinkedList<Solicitud> historialCompleto = solicitudDAO.getFullHistory();
+        LocalDate hoy = LocalDate.now();
+        boolean existenCasosHoy = false;
 
-        String fechaHoy = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        String nombreArchivo = "Reporte_Diario_" + fechaHoy + ".csv";
+        if (historialCompleto != null) {
+            for (Solicitud solicitud : historialCompleto) {
+                if (solicitud.getEstado() == EstadoSolicitud.ATENDIDA && hoy.equals(solicitud.getFechaResolucion())) {
+                    existenCasosHoy = true;
+                    break;
+                }
+            }
+        }
+
+        if (!existenCasosHoy) {
+            throw new IllegalStateException("No se han resuelto solicitudes en el día de hoy.");
+        }
 
         try (FileWriter escritor = new FileWriter(rutaAbsoluta)) {
-
             escritor.append("ID Solicitud,ID Cliente,Tipo de Caso,Criticidad,Estado,ID Tecnico Asignado,Unidad UUID,ID Kit Usado\n");
 
-            int casosAtendidos = 0;
-
             for (Solicitud solicitud : historialCompleto) {
-
-                if (solicitud.getEstado() == EstadoSolicitud.ATENDIDA) {
-
+                if (solicitud.getEstado() == EstadoSolicitud.ATENDIDA && hoy.equals(solicitud.getFechaResolucion())) {
                     escritor.append(String.valueOf(solicitud.getId())).append(",");
                     escritor.append(String.valueOf(solicitud.getIdCliente())).append(",");
                     escritor.append(solicitud.getTipo().toString()).append(",");
                     escritor.append(solicitud.getCriticidad().toString()).append(",");
                     escritor.append(solicitud.getEstado().toString()).append(",");
-
-                    // Manejo de posibles nulos para evitar NullPointerExceptions en el texto
                     escritor.append(solicitud.getIdTecnico() != 0 ? String.valueOf(solicitud.getIdTecnico()) : "N/A").append(",");
                     escritor.append(solicitud.getUuid() != null ? solicitud.getUuid() : "N/A").append(",");
                     escritor.append(solicitud.getIdKit() != 0 ? String.valueOf(solicitud.getIdKit()) : "N/A").append("\n");
-
-                    casosAtendidos++;
                 }
             }
-
-            System.out.println("¡Reporte generado exitosamente! Se exportaron " + casosAtendidos + " casos al archivo: " + nombreArchivo);
-
-        } catch (IOException e) {
-            System.err.println("Error crítico al intentar generar el archivo CSV: " + e.getMessage());
         }
     }
 

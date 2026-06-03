@@ -1,9 +1,8 @@
 package co.edu.udistrital.controller;
 
 import co.edu.udistrital.model.entities.Kit;
-import co.edu.udistrital.model.enums.EstadoKit;
 import co.edu.udistrital.model.enums.TipoKit;
-import co.edu.udistrital.model.structures.SimpleLinkedList;
+import co.edu.udistrital.model.structures.Stack;
 import co.edu.udistrital.model.usecases.KitUseCase;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,11 +34,9 @@ public class KitsController {
     public void initialize() {
         cmbTipoKit.setItems(FXCollections.observableArrayList(TipoKit.values()));
 
-        // Tabla Disponibles
         colIdDisp.setCellValueFactory(new PropertyValueFactory<>("id"));
         colTipoDisp.setCellValueFactory(new PropertyValueFactory<>("tipo"));
 
-        // Tabla Mantenimiento
         colIdMant.setCellValueFactory(new PropertyValueFactory<>("id"));
         colTipoMant.setCellValueFactory(new PropertyValueFactory<>("tipo"));
 
@@ -73,16 +70,22 @@ public class KitsController {
         ObservableList<Kit> disp = FXCollections.observableArrayList();
         ObservableList<Kit> mant = FXCollections.observableArrayList();
 
-        SimpleLinkedList<Kit> todos = useCase.obtenerTodos();
-        if (todos != null) {
-            for (Kit k : todos) {
-                if (k.getEstado() == EstadoKit.DISPONIBLE) {
-                    disp.add(k);
-                } else if (k.getEstado() == EstadoKit.EN_MANTENIMIENTO) {
-                    mant.add(k);
-                }
+        Stack<Kit> pilaDisponibles = useCase.obtenerPilaDisponibles();
+        if (pilaDisponibles != null && !pilaDisponibles.isEmpty()) {
+            Stack<Kit> clonDisp = pilaDisponibles.clone();
+            while (!clonDisp.isEmpty()) {
+                disp.add(clonDisp.pop());
             }
         }
+
+        Stack<Kit> pilaMantenimiento = useCase.obtenerPilaMantenimiento();
+        if (pilaMantenimiento != null && !pilaMantenimiento.isEmpty()) {
+            Stack<Kit> clonMant = pilaMantenimiento.clone();
+            while (!clonMant.isEmpty()) {
+                mant.add(clonMant.pop());
+            }
+        }
+
         tablaDisponibles.setItems(disp);
         tablaMantenimiento.setItems(mant);
     }

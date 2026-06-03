@@ -3,6 +3,7 @@ package co.edu.udistrital.model.daos;
 import co.edu.udistrital.model.entities.Kit;
 import co.edu.udistrital.model.enums.EstadoKit;
 import co.edu.udistrital.model.structures.SimpleLinkedList;
+import co.edu.udistrital.model.structures.Stack;
 import co.edu.udistrital.model.util.GestorArchivosBinarios;
 import co.edu.udistrital.model.util.InventarioKitsData;
 
@@ -75,6 +76,14 @@ public final class KitDAO {
 
     public SimpleLinkedList<Kit> getAll() {
         return data.fullInventory;
+    }
+
+    public Stack<Kit> getReadyStack() {
+        return data.readyStack;
+    }
+
+    public Stack<Kit> getMaintenanceStack() {
+        return data.maintenanceStack;
     }
 
     public void update() {

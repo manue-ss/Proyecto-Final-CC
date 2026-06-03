@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="650.0" prefWidth="1000.0" spacing="15.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udistrital.controller.SolicitudesController">
+<VBox prefHeight="650.0" prefWidth="1050.0" spacing="15.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.udistrital.controller.SolicitudesController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -39,16 +39,17 @@
             </children>
         </HBox>
 
-        <TableView fx:id="tablaSolicitudes" prefHeight="300.0" prefWidth="960.0" VBox.vgrow="ALWAYS">
+        <TableView fx:id="tablaSolicitudes" prefHeight="300.0" prefWidth="1010.0" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="colId" prefWidth="40.0" text="ID" />
-                <TableColumn fx:id="colTipo" prefWidth="150.0" text="Tipo Emergencia" />
-                <TableColumn fx:id="colCriticidad" prefWidth="100.0" text="Criticidad" />
-                <TableColumn fx:id="colEstado" prefWidth="120.0" text="Estado" />
-                <TableColumn fx:id="colTecnico" prefWidth="80.0" text="Técnico" />
-                <TableColumn fx:id="colUnidad" prefWidth="100.0" text="Unidad" />
-                <TableColumn fx:id="colKit" prefWidth="100.0" text="Kit Asignado" />
-                <TableColumn fx:id="colDescripcion" prefWidth="300.0" text="Descripción" />
+                <TableColumn fx:id="colTipo" prefWidth="130.0" text="Tipo Emergencia" />
+                <TableColumn fx:id="colCriticidad" prefWidth="90.0" text="Criticidad" />
+                <TableColumn fx:id="colEstado" prefWidth="110.0" text="Estado" />
+                <TableColumn fx:id="colTecnico" prefWidth="70.0" text="Técnico" />
+                <TableColumn fx:id="colUnidad" prefWidth="80.0" text="Unidad" />
+                <TableColumn fx:id="colKit" prefWidth="90.0" text="Kit Asignado" />
+                <TableColumn fx:id="colFecha" prefWidth="100.0" text="Fecha Resol." />
+                <TableColumn fx:id="colDescripcion" prefWidth="250.0" text="Descripción" />
             </columns>
         </TableView>
 

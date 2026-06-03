@@ -5,6 +5,7 @@ import co.edu.udistrital.model.entities.*;
 import co.edu.udistrital.model.enums.*;
 import co.edu.udistrital.model.structures.DoubleLinkedList;
 import co.edu.udistrital.model.structures.SimpleLinkedList;
+import java.time.LocalDate;
 
 public class SolicitudUseCase {
 
@@ -58,7 +59,7 @@ public class SolicitudUseCase {
         Tecnico tecnico = tecnicoDAO.findById(idTecnico);
         UnidadServicio unidad = unidadDAO.findByUuid(uuidUnidad);
 
-        if (solicitud == null || tecnico == null || unidad == null) {
+        if (tecnico == null || unidad == null) {
             throw new IllegalArgumentException("Uno de los recursos seleccionados no existe en el sistema.");
         }
         if (solicitud.getEstado() != EstadoSolicitud.PENDIENTE) {
@@ -113,6 +114,7 @@ public class SolicitudUseCase {
         UnidadServicio unidad = unidadDAO.findByUuid(solicitud.getUuid());
 
         solicitud.setEstado(EstadoSolicitud.ATENDIDA);
+        solicitud.setFechaResolucion(LocalDate.now());
 
         if (tecnico != null) {
             tecnico.setEstado(EstadoTecnico.DISPONIBLE);
