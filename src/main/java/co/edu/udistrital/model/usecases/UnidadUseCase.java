@@ -7,6 +7,7 @@ import co.edu.udistrital.model.entities.UnidadServicio;
 import co.edu.udistrital.model.enums.EstadoUnidad;
 import co.edu.udistrital.model.enums.TipoOperacion;
 import co.edu.udistrital.model.enums.TipoUnidad;
+import co.edu.udistrital.model.enums.Zonas;
 import co.edu.udistrital.model.structures.DoubleLinkedList;
 
 public class UnidadUseCase {
@@ -19,8 +20,8 @@ public class UnidadUseCase {
         this.operacionDAO = operacionDAO;
     }
 
-    public UnidadServicio registrarNuevaUnidad(String tipo, String zona) {
-        UnidadServicio nuevaUnidad = new UnidadServicio(TipoUnidad.valueOf(tipo), EstadoUnidad.DISPONIBLE, zona, true);
+    public UnidadServicio registrarNuevaUnidad(TipoUnidad tipo, Zonas zona) {
+        UnidadServicio nuevaUnidad = new UnidadServicio(tipo, EstadoUnidad.DISPONIBLE, zona, true);
         nuevaUnidad.setEstado(EstadoUnidad.DISPONIBLE);
         dao.add(nuevaUnidad);
         return nuevaUnidad;
@@ -55,7 +56,7 @@ public class UnidadUseCase {
 
         us.setEstado(EstadoUnidad.DISPONIBLE);
         dao.update();
-        
+
         String idOperacion = "OP-" + (operacionDAO.getHistory().size() + 1);
         Operacion opLibera = new Operacion(idOperacion, TipoOperacion.UNIDAD_LIBERADA,
                 "Unidad liberada de mantenimiento: " + uuid, null, null, uuid, null);
@@ -67,7 +68,7 @@ public class UnidadUseCase {
         if (us == null) {
             throw new IllegalArgumentException("Error: La unidad especificada no existe en el sistema.");
         }
-        
+
         if (us.getEstado() == EstadoUnidad.OCUPADA) {
             throw new IllegalStateException("No se puede dar de baja la unidad porque actualmente está atendiendo una emergencia.");
         }
